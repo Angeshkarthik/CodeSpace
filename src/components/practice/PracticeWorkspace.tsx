@@ -15,11 +15,12 @@ import {
   Tag,
   AlertCircle
 } from 'lucide-react';
-import { Layers } from 'lucide-react';
+import { Layers, BarChart3 } from 'lucide-react';
 import { Program } from '@/types';
 import { PracticeProblem, PracticeDifficulty, PracticeStatus, PracticeAttempt } from '@/lib/practice/types';
 import { PracticeProblemModal } from '../modals/PracticeProblemModal';
 import { AttemptHistoryModal } from '../modals/AttemptHistoryModal';
+import { PracticeAnalytics } from './PracticeAnalytics';
 
 interface PracticeWorkspaceProps {
   problems: PracticeProblem[];
@@ -55,6 +56,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
   onClearAllAttempts,
   onCompareAttemptWithCurrent,
 }) => {
+  const [activeTab, setActiveTab] = useState<'catalog' | 'analytics'>('catalog');
   const [searchQuery, setSearchQuery] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<'All' | PracticeDifficulty>('All');
   const [statusFilter, setStatusFilter] = useState<'All' | PracticeStatus>('All');
@@ -176,230 +178,278 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
             </p>
           </div>
 
-          <button
-            onClick={() => {
-              setProblemToEdit(null);
-              setIsModalOpen(true);
-            }}
-            className="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer self-start md:self-auto"
-          >
-            <Plus className="w-4 h-4" />
-            <span>New Problem</span>
-          </button>
-        </div>
+          <div className="flex items-center gap-3 self-start md:self-auto">
+            {/* View Switcher Tabs */}
+            <div className="flex items-center bg-[#161b22] border border-[#30363d] rounded-lg p-1 text-xs">
+              <button
+                onClick={() => setActiveTab('catalog')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer ${
+                  activeTab === 'catalog'
+                    ? 'bg-[#21262d] text-emerald-400 font-semibold shadow-xs'
+                    : 'text-gray-400 hover:text-gray-200'
+                }`}
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>Catalog</span>
+              </button>
 
-        {/* Search & Filter Bar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#161b22] border border-[#30363d] p-3 rounded-xl">
-          {/* Client Search */}
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search problems by title or topic..."
-              className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg pl-9 pr-3 py-1.5 text-xs text-gray-200 focus:outline-none focus:border-emerald-500 font-mono"
-            />
-          </div>
-
-          {/* Filters */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-            {/* Difficulty Filter */}
-            <div className="flex items-center bg-[#0d1117] border border-[#30363d] rounded-lg p-1 text-xs">
-              {(['All', 'Easy', 'Medium', 'Hard'] as const).map((diff) => (
-                <button
-                  key={diff}
-                  onClick={() => setDifficultyFilter(diff)}
-                  className={`px-2.5 py-1 rounded text-xs transition-colors ${
-                    difficultyFilter === diff
-                      ? 'bg-[#21262d] text-emerald-400 font-semibold shadow-xs'
-                      : 'text-gray-400 hover:text-gray-200'
-                  }`}
-                >
-                  {diff}
-                </button>
-              ))}
+              <button
+                onClick={() => setActiveTab('analytics')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer ${
+                  activeTab === 'analytics'
+                    ? 'bg-[#21262d] text-cyan-400 font-semibold shadow-xs'
+                    : 'text-gray-400 hover:text-gray-200'
+                }`}
+              >
+                <BarChart3 className="w-3.5 h-3.5" />
+                <span>Analytics</span>
+              </button>
             </div>
 
-            {/* Status Filter */}
-            <div className="flex items-center bg-[#0d1117] border border-[#30363d] rounded-lg p-1 text-xs">
-              {(['All', 'Not Started', 'In Progress', 'Solved'] as const).map((st) => (
-                <button
-                  key={st}
-                  onClick={() => setStatusFilter(st)}
-                  className={`px-2.5 py-1 rounded text-xs transition-colors ${
-                    statusFilter === st
-                      ? 'bg-[#21262d] text-emerald-400 font-semibold shadow-xs'
-                      : 'text-gray-400 hover:text-gray-200'
-                  }`}
-                >
-                  {st}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Practice Problem Cards List */}
-        {filteredProblems.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredProblems.map((prob) => {
-              const linkedProgram = programs.find((p) => p.uuid === prob.programUuid) || null;
-
-              return (
-                <div
-                  key={prob.uuid}
-                  className="bg-[#161b22] border border-[#30363d] hover:border-gray-600 rounded-xl p-4 flex flex-col justify-between transition-all group shadow-xs"
-                >
-                  <div>
-                    {/* Header Row: Title & Badges */}
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <div>
-                        <h3 className="text-sm font-bold text-gray-100 group-hover:text-emerald-400 transition-colors">
-                          {prob.title}
-                        </h3>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="flex items-center gap-1 text-[11px] text-gray-400">
-                            <Tag className="w-3 h-3 text-sky-400" />
-                            {prob.topic}
-                          </span>
-                          {renderDifficultyBadge(prob.difficulty)}
-                        </div>
-                      </div>
-
-                      {/* Status Dropdown Trigger */}
-                      <div className="relative">
-                        <select
-                          value={prob.status}
-                          onChange={(e) =>
-                            onUpdateProblem(prob.uuid, { status: e.target.value as PracticeStatus })
-                          }
-                          className="bg-[#0d1117] border border-[#30363d] text-gray-300 hover:border-gray-500 rounded px-2 py-1 text-xs focus:outline-none cursor-pointer"
-                        >
-                          <option value="Not Started">Not Started</option>
-                          <option value="In Progress">In Progress</option>
-                          <option value="Solved">Solved</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* Description Excerpt */}
-                    {prob.description && (
-                      <p className="text-xs text-gray-400 line-clamp-2 mb-3 bg-[#0d1117]/60 p-2 rounded border border-[#30363d]/50 font-sans">
-                        {prob.description}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Footer Row: Linked Program Info & Action Buttons */}
-                  <div className="pt-3 border-t border-[#30363d]/70 flex items-center justify-between gap-2">
-                    {/* Linked Program Tag */}
-                    <div className="text-[11px] text-gray-400 truncate">
-                      {linkedProgram ? (
-                        <span className="flex items-center gap-1 font-mono text-emerald-400">
-                          <FileCode className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                          <span className="truncate">{linkedProgram.name}</span>
-                        </span>
-                      ) : (
-                        <span className="text-gray-500 italic">No program linked</span>
-                      )}
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {/* Attempts Button */}
-                      <button
-                        onClick={() => setHistoryProblem(prob)}
-                        className="flex items-center gap-1 px-2 py-1 bg-[#0d1117] hover:bg-[#21262d] text-gray-300 border border-[#30363d] rounded text-xs font-mono transition-colors"
-                        title="View Attempt History"
-                        aria-label="View Attempt History"
-                      >
-                        <Layers className="w-3.5 h-3.5 text-sky-400" />
-                        <span>Attempts ({attempts.filter((a) => a.practiceProblemUuid === prob.uuid).length})</span>
-                      </button>
-
-                      {/* Edit Button */}
-                      <button
-                        onClick={() => {
-                          setProblemToEdit(prob);
-                          setIsModalOpen(true);
-                        }}
-                        className="p-1.5 text-gray-400 hover:text-gray-200 hover:bg-[#21262d] rounded transition-colors"
-                        title="Edit practice problem"
-                        aria-label="Edit problem"
-                      >
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </button>
-
-                      {/* Delete Button */}
-                      <button
-                        onClick={() => setProblemToDelete(prob)}
-                        className="p-1.5 text-gray-400 hover:text-red-400 hover:bg-red-950/30 rounded transition-colors"
-                        title="Delete practice problem"
-                        aria-label="Delete problem"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-
-                      {/* Primary Open/Start Practice Action */}
-                      {linkedProgram ? (
-                        <button
-                          onClick={() => onOpenPracticeProgram(prob, linkedProgram.uuid)}
-                          className="flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold shadow-xs transition-colors cursor-pointer"
-                        >
-                          <span>Open Practice</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            setProblemToLink(prob);
-                            setSelectedProgramToLink(programs.length > 0 ? programs[0].uuid : '');
-                          }}
-                          className="flex items-center gap-1 px-3 py-1 bg-[#21262d] hover:bg-[#30363d] text-gray-200 border border-[#30363d] rounded text-xs font-medium cursor-pointer transition-colors"
-                        >
-                          <span>Start Practice</span>
-                          <Plus className="w-3 h-3 text-emerald-400" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          /* Empty State */
-          <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-12 text-center space-y-4">
-            <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mx-auto">
-              <BookOpen className="w-6 h-6" />
-            </div>
-            {problems.length === 0 ? (
-              <div>
-                <h3 className="text-base font-semibold text-gray-200">Your practice workspace is empty</h3>
-                <p className="text-xs text-gray-400 max-w-sm mx-auto mt-1">
-                  Create a problem to start organizing your placement preparation and link your code.
-                </p>
-                <button
-                  onClick={() => {
-                    setProblemToEdit(null);
-                    setIsModalOpen(true);
-                  }}
-                  className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>+ New Problem</span>
-                </button>
-              </div>
-            ) : (
-              <div>
-                <h3 className="text-base font-semibold text-gray-200">No matching problems found</h3>
-                <p className="text-xs text-gray-400 max-w-sm mx-auto mt-1">
-                  Try adjusting your search query or filter selection.
-                </p>
-              </div>
+            {activeTab === 'catalog' && (
+              <button
+                onClick={() => {
+                  setProblemToEdit(null);
+                  setIsModalOpen(true);
+                }}
+                className="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+              >
+                <Plus className="w-4 h-4" />
+                <span>New Problem</span>
+              </button>
             )}
           </div>
+        </div>
+
+        {activeTab === 'catalog' ? (
+          <>
+            {/* Search & Filter Bar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#161b22] border border-[#30363d] p-3 rounded-xl">
+              {/* Client Search */}
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search problems by title or topic..."
+                  className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg pl-9 pr-3 py-1.5 text-xs text-gray-200 focus:outline-none focus:border-emerald-500 font-mono"
+                />
+              </div>
+
+              {/* Filters */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+                {/* Difficulty Filter */}
+                <div className="flex items-center bg-[#0d1117] border border-[#30363d] rounded-lg p-1 text-xs">
+                  {(['All', 'Easy', 'Medium', 'Hard'] as const).map((diff) => (
+                    <button
+                      key={diff}
+                      onClick={() => setDifficultyFilter(diff)}
+                      className={`px-2.5 py-1 rounded text-xs transition-colors ${
+                        difficultyFilter === diff
+                          ? 'bg-[#21262d] text-emerald-400 font-semibold shadow-xs'
+                          : 'text-gray-400 hover:text-gray-200'
+                      }`}
+                    >
+                      {diff}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Status Filter */}
+                <div className="flex items-center bg-[#0d1117] border border-[#30363d] rounded-lg p-1 text-xs">
+                  {(['All', 'Not Started', 'In Progress', 'Solved'] as const).map((st) => (
+                    <button
+                      key={st}
+                      onClick={() => setStatusFilter(st)}
+                      className={`px-2.5 py-1 rounded text-xs transition-colors ${
+                        statusFilter === st
+                          ? 'bg-[#21262d] text-emerald-400 font-semibold shadow-xs'
+                          : 'text-gray-400 hover:text-gray-200'
+                      }`}
+                    >
+                      {st}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Practice Problem Cards List */}
+            {filteredProblems.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {filteredProblems.map((prob) => {
+                  const linkedProgram = programs.find((p) => p.uuid === prob.programUuid) || null;
+
+                  return (
+                    <div
+                      key={prob.uuid}
+                      className="bg-[#161b22] border border-[#30363d] hover:border-gray-600 rounded-xl p-4 flex flex-col justify-between transition-all group shadow-xs"
+                    >
+                      <div>
+                        {/* Header Row: Title & Badges */}
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <div>
+                            <h3 className="text-sm font-bold text-gray-100 group-hover:text-emerald-400 transition-colors">
+                              {prob.title}
+                            </h3>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="flex items-center gap-1 text-[11px] text-gray-400">
+                                <Tag className="w-3 h-3 text-sky-400" />
+                                {prob.topic}
+                              </span>
+                              {renderDifficultyBadge(prob.difficulty)}
+                            </div>
+                          </div>
+
+                          {/* Status Dropdown Trigger */}
+                          <div className="relative">
+                            <select
+                              value={prob.status}
+                              onChange={(e) =>
+                                onUpdateProblem(prob.uuid, { status: e.target.value as PracticeStatus })
+                              }
+                              className="bg-[#0d1117] border border-[#30363d] text-gray-300 hover:border-gray-500 rounded px-2 py-1 text-xs focus:outline-none cursor-pointer"
+                            >
+                              <option value="Not Started">Not Started</option>
+                              <option value="In Progress">In Progress</option>
+                              <option value="Solved">Solved</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        {/* Description Excerpt */}
+                        {prob.description && (
+                          <p className="text-xs text-gray-400 line-clamp-2 mb-3 bg-[#0d1117]/60 p-2 rounded border border-[#30363d]/50 font-sans">
+                            {prob.description}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Footer Row: Linked Program Info & Action Buttons */}
+                      <div className="pt-3 border-t border-[#30363d]/70 flex items-center justify-between gap-2">
+                        {/* Linked Program Tag */}
+                        <div className="text-[11px] text-gray-400 truncate">
+                          {linkedProgram ? (
+                            <span className="flex items-center gap-1 font-mono text-emerald-400">
+                              <FileCode className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                              <span className="truncate">{linkedProgram.name}</span>
+                            </span>
+                          ) : (
+                            <span className="text-gray-500 italic">No program linked</span>
+                          )}
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {/* Attempts Button */}
+                          <button
+                            onClick={() => setHistoryProblem(prob)}
+                            className="flex items-center gap-1 px-2 py-1 bg-[#0d1117] hover:bg-[#21262d] text-gray-300 border border-[#30363d] rounded text-xs font-mono transition-colors"
+                            title="View Attempt History"
+                            aria-label="View Attempt History"
+                          >
+                            <Layers className="w-3.5 h-3.5 text-sky-400" />
+                            <span>Attempts ({attempts.filter((a) => a.practiceProblemUuid === prob.uuid).length})</span>
+                          </button>
+
+                          {/* Edit Button */}
+                          <button
+                            onClick={() => {
+                              setProblemToEdit(prob);
+                              setIsModalOpen(true);
+                            }}
+                            className="p-1.5 text-gray-400 hover:text-gray-200 hover:bg-[#21262d] rounded transition-colors"
+                            title="Edit practice problem"
+                            aria-label="Edit problem"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+
+                          {/* Delete Button */}
+                          <button
+                            onClick={() => setProblemToDelete(prob)}
+                            className="p-1.5 text-gray-400 hover:text-red-400 hover:bg-red-950/30 rounded transition-colors"
+                            title="Delete practice problem"
+                            aria-label="Delete problem"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+
+                          {/* Primary Open/Start Practice Action */}
+                          {linkedProgram ? (
+                            <button
+                              onClick={() => onOpenPracticeProgram(prob, linkedProgram.uuid)}
+                              className="flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                            >
+                              <span>Open Practice</span>
+                              <ExternalLink className="w-3 h-3" />
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => {
+                                setProblemToLink(prob);
+                                setSelectedProgramToLink(programs.length > 0 ? programs[0].uuid : '');
+                              }}
+                              className="flex items-center gap-1 px-3 py-1 bg-[#21262d] hover:bg-[#30363d] text-gray-200 border border-[#30363d] rounded text-xs font-medium cursor-pointer transition-colors"
+                            >
+                              <span>Start Practice</span>
+                              <Plus className="w-3 h-3 text-emerald-400" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              /* Empty State */
+              <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-12 text-center space-y-4">
+                <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mx-auto">
+                  <BookOpen className="w-6 h-6" />
+                </div>
+                {problems.length === 0 ? (
+                  <div>
+                    <h3 className="text-base font-semibold text-gray-200">Your practice workspace is empty</h3>
+                    <p className="text-xs text-gray-400 max-w-sm mx-auto mt-1">
+                      Create a problem to start organizing your placement preparation and link your code.
+                    </p>
+                    <button
+                      onClick={() => {
+                        setProblemToEdit(null);
+                        setIsModalOpen(true);
+                      }}
+                      className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>+ New Problem</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <h3 className="text-base font-semibold text-gray-200">No matching problems found</h3>
+                    <p className="text-xs text-gray-400 max-w-sm mx-auto mt-1">
+                      Try adjusting your search query or filter selection.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        ) : (
+          <PracticeAnalytics
+            problems={problems}
+            attempts={attempts}
+            onFilterByDifficulty={(diff) => {
+              setDifficultyFilter(diff);
+              setActiveTab('catalog');
+            }}
+            onFilterByTopic={(top) => {
+              setSearchQuery(top);
+              setActiveTab('catalog');
+            }}
+          />
         )}
       </div>
 
