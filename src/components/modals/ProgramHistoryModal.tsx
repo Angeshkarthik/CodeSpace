@@ -59,18 +59,37 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
   const [confirmRestoreVersion, setConfirmRestoreVersion] = useState<ProgramVersion | null>(null);
   const [confirmClearAll, setConfirmClearAll] = useState(false);
 
-  // Keyboard shortcut: Escape to close
+  // Keyboard shortcut: Escape to close top-most sub-dialog or modal
   useEffect(() => {
     if (!isOpen) return;
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        if (selectedVersion) setSelectedVersion(null);
-        else onClose();
+        if (confirmRestoreVersion) {
+          setConfirmRestoreVersion(null);
+        } else if (confirmDeleteUuid) {
+          setConfirmDeleteUuid(null);
+        } else if (confirmClearAll) {
+          setConfirmClearAll(false);
+        } else if (editingUuid) {
+          setEditingUuid(null);
+        } else if (selectedVersion) {
+          setSelectedVersion(null);
+        } else {
+          onClose();
+        }
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [isOpen, onClose, selectedVersion]);
+  }, [
+    isOpen,
+    onClose,
+    confirmRestoreVersion,
+    confirmDeleteUuid,
+    confirmClearAll,
+    editingUuid,
+    selectedVersion,
+  ]);
 
   if (!isOpen) return null;
 
@@ -98,8 +117,16 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
     : 'plaintext';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-      <div className="flex flex-col w-full max-w-5xl h-[88vh] bg-[#0d1117] border border-[#30363d] rounded-xl shadow-2xl overflow-hidden pointer-events-auto">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className="flex flex-col w-full max-w-5xl h-[88vh] bg-[#0d1117] border border-[#30363d] rounded-xl shadow-2xl overflow-hidden pointer-events-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
 
         {/* ── Modal Header ── */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-[#30363d] bg-[#161b22] shrink-0">
@@ -432,8 +459,16 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
 
         {/* Confirmation: Restore */}
         {confirmRestoreVersion && (
-          <div className="absolute inset-0 z-60 bg-black/70 flex items-center justify-center p-4">
-            <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 max-w-sm w-full space-y-3 shadow-xl">
+          <div
+            className="absolute inset-0 z-60 bg-black/70 flex items-center justify-center p-4"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setConfirmRestoreVersion(null);
+            }}
+          >
+            <div
+              className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 max-w-sm w-full space-y-3 shadow-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="flex items-center gap-2 text-purple-400 font-semibold text-sm">
                 <RotateCcw className="w-5 h-5" />
                 <h3>Restore Version {confirmRestoreVersion.versionNumber}?</h3>
@@ -444,7 +479,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   onClick={() => setConfirmRestoreVersion(null)}
-                  className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium cursor-pointer"
+                  className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
                 >
                   Cancel
                 </button>
@@ -454,7 +489,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
                     setConfirmRestoreVersion(null);
                     onClose();
                   }}
-                  className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs font-semibold cursor-pointer"
+                  className="px-4 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
                 >
                   Restore Version
                 </button>
@@ -465,8 +500,16 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
 
         {/* Confirmation: Delete Single Version */}
         {confirmDeleteUuid && (
-          <div className="absolute inset-0 z-60 bg-black/70 flex items-center justify-center p-4">
-            <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 max-w-sm w-full space-y-3 shadow-xl">
+          <div
+            className="absolute inset-0 z-60 bg-black/70 flex items-center justify-center p-4"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setConfirmDeleteUuid(null);
+            }}
+          >
+            <div
+              className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 max-w-sm w-full space-y-3 shadow-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="flex items-center gap-2 text-red-400 font-semibold text-sm">
                 <Trash2 className="w-5 h-5" />
                 <h3>Delete Historical Version?</h3>
@@ -477,7 +520,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   onClick={() => setConfirmDeleteUuid(null)}
-                  className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium cursor-pointer"
+                  className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
                 >
                   Cancel
                 </button>
@@ -487,7 +530,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
                     setConfirmDeleteUuid(null);
                     if (selectedVersion?.uuid === confirmDeleteUuid) setSelectedVersion(null);
                   }}
-                  className="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold cursor-pointer"
+                  className="px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
                 >
                   Delete
                 </button>
@@ -498,8 +541,16 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
 
         {/* Confirmation: Clear All History */}
         {confirmClearAll && (
-          <div className="absolute inset-0 z-60 bg-black/70 flex items-center justify-center p-4">
-            <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 max-w-sm w-full space-y-3 shadow-xl">
+          <div
+            className="absolute inset-0 z-60 bg-black/70 flex items-center justify-center p-4"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setConfirmClearAll(false);
+            }}
+          >
+            <div
+              className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 max-w-sm w-full space-y-3 shadow-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="flex items-center gap-2 text-red-400 font-semibold text-sm">
                 <AlertTriangle className="w-5 h-5" />
                 <h3>Clear Program History?</h3>
@@ -510,7 +561,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   onClick={() => setConfirmClearAll(false)}
-                  className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium cursor-pointer"
+                  className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
                 >
                   Cancel
                 </button>
@@ -520,7 +571,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
                     setConfirmClearAll(false);
                     setSelectedVersion(null);
                   }}
-                  className="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold cursor-pointer"
+                  className="px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
                 >
                   Clear All History
                 </button>
@@ -536,7 +587,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-200 border border-[#30363d] rounded text-xs font-medium transition-colors cursor-pointer"
+            className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
           >
             Close
           </button>

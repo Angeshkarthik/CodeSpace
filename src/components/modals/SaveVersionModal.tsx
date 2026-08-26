@@ -20,13 +20,24 @@ export const SaveVersionModal: React.FC<SaveVersionModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isOpen) {
       setLabel(`Version ${defaultVersionNumber}`);
       setError(null);
       setIsSubmitting(false);
     }
   }, [isOpen, defaultVersionNumber]);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -51,30 +62,43 @@ export const SaveVersionModal: React.FC<SaveVersionModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-      <div className="flex flex-col w-full max-w-md bg-[#0d1117] border border-[#30363d] rounded-xl shadow-2xl overflow-hidden pointer-events-auto">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="save-version-modal-title"
+        className="flex flex-col w-full max-w-md bg-[#0d1117] border border-[#30363d] rounded-xl shadow-2xl overflow-hidden pointer-events-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
 
         {/* Modal Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-[#30363d] bg-[#161b22]">
           <div className="flex items-center gap-2">
-            <Save className="w-4 h-4 text-emerald-400" />
-            <h2 className="text-sm font-semibold text-gray-100">Save Program Version</h2>
+            <Save className="w-4 h-4 text-emerald-400" aria-hidden="true" />
+            <h2 id="save-version-modal-title" className="text-sm font-semibold text-gray-100">Save Program Version</h2>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded hover:bg-[#30363d] text-gray-400 hover:text-gray-100 transition-colors"
+            aria-label="Close modal dialog"
+            className="p-1 rounded hover:bg-[#30363d] text-gray-400 hover:text-gray-100 transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
           >
-            <X className="w-4 h-4" />
+            <X className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-gray-300">
+            <label htmlFor="save-version-label-input" className="text-xs font-medium text-gray-300">
               Version Label <span className="text-gray-500 font-normal">(Optional)</span>
             </label>
             <input
+              id="save-version-label-input"
               type="text"
               value={label}
               onChange={(e) => setLabel(e.target.value)}
@@ -89,7 +113,7 @@ export const SaveVersionModal: React.FC<SaveVersionModalProps> = ({
 
           {error && (
             <div className="flex items-start gap-2 p-3 bg-red-900/20 border border-red-700/30 rounded text-xs text-red-300 font-mono">
-              <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" aria-hidden="true" />
               <span>{error}</span>
             </div>
           )}
@@ -98,16 +122,16 @@ export const SaveVersionModal: React.FC<SaveVersionModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer"
+              className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-1.5 px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
             >
-              <Save className="w-3.5 h-3.5" />
+              <Save className="w-3.5 h-3.5" aria-hidden="true" />
               <span>{isSubmitting ? 'Saving...' : 'Save Checkpoint'}</span>
             </button>
           </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Plus, Trash2, Play, CheckCircle2, XCircle, AlertTriangle, Clock, FileInput, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, Play, CheckCircle2, XCircle, AlertTriangle, Clock, FileInput, ChevronRight, FlaskConical } from 'lucide-react';
 import { TestCase } from '@/types';
 import { TestResultItem, BatchTestSummary } from '@/lib/execution/TestRunner';
 
@@ -41,18 +41,20 @@ export const TestCasesPanel: React.FC<TestCasesPanelProps> = ({
           <button
             onClick={onRunTests}
             disabled={isTesting || testCases.length === 0}
-            className="flex items-center gap-1.5 px-3 py-1 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 disabled:opacity-50 text-white rounded text-xs font-semibold cursor-pointer transition-colors"
+            aria-label="Run all test cases"
+            className="flex items-center gap-1.5 px-3 py-1 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 disabled:opacity-50 text-white rounded text-xs font-semibold cursor-pointer transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
           >
-            <Play className="w-3.5 h-3.5 fill-current" />
+            <Play className="w-3.5 h-3.5 fill-current" aria-hidden="true" />
             <span>{isTesting ? `Running tests... ${testProgress?.completed || 0} / ${testProgress?.total || testCases.length}` : 'Run Tests'}</span>
           </button>
 
           <button
             onClick={onAddTestCase}
             disabled={isTesting}
-            className="flex items-center gap-1 px-2.5 py-1 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium border border-[#30363d] transition-colors"
+            aria-label="Add new test case"
+            className="flex items-center gap-1 px-2.5 py-1 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium border border-[#30363d] transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Add Test</span>
           </button>
         </div>
@@ -66,11 +68,11 @@ export const TestCasesPanel: React.FC<TestCasesPanelProps> = ({
             <div className="flex items-center gap-1 text-[11px]">
               {testSummary.passed === testSummary.total ? (
                 <span className="flex items-center gap-1 text-emerald-400 font-semibold px-2 py-0.5 bg-emerald-500/10 rounded border border-emerald-500/30">
-                  <CheckCircle2 className="w-3.5 h-3.5" /> All Passed
+                  <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" /> All Passed
                 </span>
               ) : (
                 <span className="flex items-center gap-1 text-red-400 font-semibold px-2 py-0.5 bg-red-500/10 rounded border border-red-500/30">
-                  <XCircle className="w-3.5 h-3.5" /> {testSummary.failed} Failed
+                  <XCircle className="w-3.5 h-3.5" aria-hidden="true" /> {testSummary.failed} Failed
                 </span>
               )}
             </div>
@@ -81,7 +83,7 @@ export const TestCasesPanel: React.FC<TestCasesPanelProps> = ({
       {/* Main Panel Content: Left list + Right details */}
       <div className="flex-1 flex min-h-0 overflow-hidden">
         {/* Left Side: Test Cases Tabs / List */}
-        <div className="w-48 border-r border-[#30363d] bg-[#161b22]/40 flex flex-col overflow-y-auto divide-y divide-[#21262d]">
+        <div className="w-48 border-r border-[#30363d] bg-[#161b22]/40 flex flex-col overflow-y-auto divide-y divide-[#21262d]" role="tablist" aria-label="Test cases list">
           {testCases.length === 0 ? (
             <div className="p-4 text-center text-gray-500 font-sans text-xs">
               No test cases.
@@ -96,8 +98,11 @@ export const TestCasesPanel: React.FC<TestCasesPanelProps> = ({
               return (
                 <button
                   key={tc.uuid}
+                  role="tab"
+                  aria-selected={isSelected}
+                  aria-label={`Test ${idx + 1}`}
                   onClick={() => setSelectedTestCaseUuid(tc.uuid)}
-                  className={`w-full p-2.5 text-left flex items-center justify-between transition-colors ${
+                  className={`w-full p-2.5 text-left flex items-center justify-between transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50 ${
                     isSelected ? 'bg-[#21262d] text-white border-l-2 border-emerald-500' : 'text-gray-400 hover:bg-[#161b22] hover:text-gray-200'
                   }`}
                 >
@@ -106,11 +111,11 @@ export const TestCasesPanel: React.FC<TestCasesPanelProps> = ({
                     {res && (
                       <span>
                         {res.status === 'passed' ? (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />
                         ) : res.status === 'timeout' ? (
-                          <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                          <AlertTriangle className="w-3.5 h-3.5 text-amber-400" aria-hidden="true" />
                         ) : (
-                          <XCircle className="w-3.5 h-3.5 text-red-400" />
+                          <XCircle className="w-3.5 h-3.5 text-red-400" aria-hidden="true" />
                         )}
                       </span>
                     )}
@@ -120,7 +125,7 @@ export const TestCasesPanel: React.FC<TestCasesPanelProps> = ({
                     {res?.executionTimeMs !== undefined && (
                       <span className="text-[10px] text-gray-500 font-mono">{res.executionTimeMs}ms</span>
                     )}
-                    <ChevronRight className="w-3.5 h-3.5 text-gray-600" />
+                    <ChevronRight className="w-3.5 h-3.5 text-gray-600" aria-hidden="true" />
                   </div>
                 </button>
               );
@@ -167,10 +172,11 @@ export const TestCasesPanel: React.FC<TestCasesPanelProps> = ({
 
                 <button
                   onClick={() => onDeleteTestCase(activeTestCase.uuid)}
-                  className="p-1 text-gray-500 hover:text-red-400 hover:bg-[#21262d] rounded transition-colors"
+                  aria-label={`Delete test case ${testCases.findIndex((t) => t.uuid === activeTestCase.uuid) + 1}`}
+                  className="p-1 text-gray-500 hover:text-red-400 hover:bg-[#21262d] rounded transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
                   title="Delete Test Case"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
+                  <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
                 </button>
               </div>
 
@@ -178,11 +184,12 @@ export const TestCasesPanel: React.FC<TestCasesPanelProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1">
                 {/* Input Textarea */}
                 <div className="flex flex-col">
-                  <label className="text-[11px] font-sans text-gray-400 mb-1 flex items-center gap-1">
-                    <FileInput className="w-3 h-3 text-emerald-400" />
+                  <label htmlFor="testcase-input" className="text-[11px] font-sans text-gray-400 mb-1 flex items-center gap-1">
+                    <FileInput className="w-3 h-3 text-emerald-400" aria-hidden="true" />
                     <span>Input (stdin)</span>
                   </label>
                   <textarea
+                    id="testcase-input"
                     value={activeTestCase.input}
                     onChange={(e) => onUpdateTestCase(activeTestCase.uuid, { input: e.target.value })}
                     placeholder="Enter test input lines here..."
@@ -192,11 +199,12 @@ export const TestCasesPanel: React.FC<TestCasesPanelProps> = ({
 
                 {/* Optional Expected Output Textarea */}
                 <div className="flex flex-col">
-                  <label className="text-[11px] font-sans text-gray-400 mb-1 flex items-center justify-between">
+                  <label htmlFor="testcase-expected-output" className="text-[11px] font-sans text-gray-400 mb-1 flex items-center justify-between">
                     <span>Expected Output (Optional)</span>
                     <span className="text-[10px] text-gray-500">Leave blank for execution-only test</span>
                   </label>
                   <textarea
+                    id="testcase-expected-output"
                     value={activeTestCase.expectedOutput || ''}
                     onChange={(e) => onUpdateTestCase(activeTestCase.uuid, { expectedOutput: e.target.value })}
                     placeholder="Optional expected stdout for comparison..."
@@ -220,14 +228,14 @@ export const TestCasesPanel: React.FC<TestCasesPanelProps> = ({
 
                   {/* Execution Output */}
                   {activeResult.actualOutput && (
-                    <div className="bg-[#161b22] border border-[#30363d] rounded p-2 text-xs font-mono text-emerald-300 whitespace-pre-wrap max-h-32 overflow-auto">
+                    <div className="bg-[#161b22] border border-[#30363d] rounded p-2 text-xs font-mono text-emerald-300 whitespace-pre-wrap break-words break-all max-h-32 overflow-auto">
                       {activeResult.actualOutput}
                     </div>
                   )}
 
                   {/* Error Output */}
                   {activeResult.stderr && (
-                    <div className="bg-[#161b22] border border-red-900/50 rounded p-2 text-xs font-mono text-red-400 whitespace-pre-wrap max-h-32 overflow-auto">
+                    <div className="bg-[#161b22] border border-red-900/50 rounded p-2 text-xs font-mono text-red-400 whitespace-pre-wrap break-words break-all max-h-32 overflow-auto">
                       {activeResult.stderr}
                     </div>
                   )}
@@ -248,8 +256,18 @@ export const TestCasesPanel: React.FC<TestCasesPanelProps> = ({
               )}
             </div>
           ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-gray-500 py-6">
-              <p>Select or add a test case to configure input.</p>
+            <div className="flex-1 flex flex-col items-center justify-center text-gray-500 py-6 space-y-3">
+              <FlaskConical className="w-8 h-8 text-gray-600" aria-hidden="true" />
+              <div className="text-center space-y-1">
+                <p className="text-xs font-medium text-gray-300">No test cases</p>
+                <p className="text-[11px] text-gray-500 max-w-[200px]">Create a test case to provide standard input and verify output.</p>
+              </div>
+              <button
+                onClick={onAddTestCase}
+                className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-[11px] font-medium transition-colors border border-[#30363d] focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+              >
+                + Add Test
+              </button>
             </div>
           )}
         </div>

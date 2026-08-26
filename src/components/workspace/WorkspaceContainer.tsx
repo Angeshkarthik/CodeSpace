@@ -1330,14 +1330,25 @@ export const WorkspaceContainer: React.FC = () => {
 
       {/* No Problem Warning Modal */}
       {noProblemWarningMsg && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4">
-          <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl">
-            <h3 className="text-sm font-bold text-amber-400">No Active Practice Problem</h3>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setNoProblemWarningMsg(null);
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="no-problem-warning-title"
+            className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 id="no-problem-warning-title" className="text-sm font-bold text-amber-400">No Active Practice Problem</h3>
             <p className="text-xs text-gray-300">{noProblemWarningMsg}</p>
             <div className="flex justify-end">
               <button
                 onClick={() => setNoProblemWarningMsg(null)}
-                className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold"
+                className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
               >
                 OK
               </button>
@@ -1348,16 +1359,27 @@ export const WorkspaceContainer: React.FC = () => {
 
       {/* Duplicate Attempt Prompt */}
       {isDuplicatePromptOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4">
-          <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl">
-            <h3 className="text-sm font-bold text-gray-100">Duplicate Code Attempt</h3>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsDuplicatePromptOpen(false);
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="duplicate-attempt-prompt-title"
+            className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 id="duplicate-attempt-prompt-title" className="text-sm font-bold text-gray-100">Duplicate Code Attempt</h3>
             <p className="text-xs text-gray-400">
               This code matches your previous recorded attempt for "{activePracticeProblem?.title}".
             </p>
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setIsDuplicatePromptOpen(false)}
-                className="px-3.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 border border-[#30363d] rounded text-xs"
+                className="px-3.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 border border-[#30363d] rounded text-xs focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
               >
                 Cancel
               </button>
@@ -1366,7 +1388,7 @@ export const WorkspaceContainer: React.FC = () => {
                   setIsDuplicatePromptOpen(false);
                   await executeRecordAttempt();
                 }}
-                className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold"
+                className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
               >
                 Record Anyway
               </button>
@@ -1377,16 +1399,27 @@ export const WorkspaceContainer: React.FC = () => {
 
       {/* Solved Status Prompt */}
       {solvedPromptProblem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4">
-          <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl">
-            <h3 className="text-sm font-bold text-emerald-400">Attempt Solved! 🎉</h3>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSolvedPromptProblem(null);
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="solved-prompt-title"
+            className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 id="solved-prompt-title" className="text-sm font-bold text-emerald-400">Attempt Solved! 🎉</h3>
             <p className="text-xs text-gray-300">
               All test cases passed for "{solvedPromptProblem.title}". Would you like to mark this practice problem as Solved?
             </p>
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setSolvedPromptProblem(null)}
-                className="px-3.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 border border-[#30363d] rounded text-xs"
+                className="px-3.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 border border-[#30363d] rounded text-xs focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
               >
                 Keep Current Status
               </button>
@@ -1398,7 +1431,7 @@ export const WorkspaceContainer: React.FC = () => {
                   }
                   setSolvedPromptProblem(null);
                 }}
-                className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold"
+                className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
               >
                 Mark as Solved
               </button>

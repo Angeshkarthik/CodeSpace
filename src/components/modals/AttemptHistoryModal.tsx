@@ -41,6 +41,25 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
   const [attemptToDelete, setAttemptToDelete] = useState<PracticeAttempt | null>(null);
   const [isConfirmingClear, setIsConfirmingClear] = useState(false);
 
+  React.useEffect(() => {
+    if (!isOpen || !problem) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (attemptToDelete) {
+          setAttemptToDelete(null);
+        } else if (isConfirmingClear) {
+          setIsConfirmingClear(false);
+        } else if (selectedAttempt) {
+          setSelectedAttempt(null);
+        } else {
+          onClose();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, problem, attemptToDelete, isConfirmingClear, selectedAttempt, onClose]);
+
   if (!isOpen || !problem) return null;
 
   const renderOutcomeBadge = (outcome: PracticeAttempt['outcome']) => {
@@ -86,8 +105,16 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 animate-in fade-in duration-150">
-      <div className="bg-[#161b22] border border-[#30363d] rounded-xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 animate-in fade-in duration-150"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className="bg-[#161b22] border border-[#30363d] rounded-xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#30363d] bg-[#0d1117]/60">
           <div className="flex items-center gap-2.5">
@@ -157,7 +184,7 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
                       onCompareWithCurrent(selectedAttempt);
                       onClose();
                     }}
-                    className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold shadow-xs transition-colors flex items-center gap-1.5"
+                    className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50 flex items-center gap-1.5"
                   >
                     <ArrowRightLeft className="w-3.5 h-3.5" />
                     <span>Compare with Current Code</span>
@@ -328,8 +355,16 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
 
       {/* Delete Single Attempt Confirmation */}
       {attemptToDelete && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/80 p-4">
-          <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl">
+        <div
+          className="fixed inset-0 z-60 flex items-center justify-center bg-black/80 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setAttemptToDelete(null);
+          }}
+        >
+          <div
+            className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-sm font-bold text-gray-100">Delete Attempt #{attemptToDelete.attemptNumber}?</h3>
             <p className="text-xs text-gray-400">
               Are you sure you want to delete this historical attempt? This action cannot be undone.
@@ -337,13 +372,13 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setAttemptToDelete(null)}
-                className="px-3.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs"
+                className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmDelete}
-                className="px-3.5 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold"
+                className="px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
               >
                 Delete
               </button>
@@ -354,8 +389,16 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
 
       {/* Clear All Attempts Confirmation */}
       {isConfirmingClear && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/80 p-4">
-          <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl">
+        <div
+          className="fixed inset-0 z-60 flex items-center justify-center bg-black/80 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsConfirmingClear(false);
+          }}
+        >
+          <div
+            className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-sm font-bold text-red-400">Clear All Attempt History?</h3>
             <p className="text-xs text-gray-400">
               Delete all {attempts.length} attempts for "{problem.title}"? The linked code program will remain intact.
@@ -363,13 +406,13 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setIsConfirmingClear(false)}
-                className="px-3.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs"
+                className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmClearAll}
-                className="px-3.5 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold"
+                className="px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
               >
                 Clear All Attempts
               </button>

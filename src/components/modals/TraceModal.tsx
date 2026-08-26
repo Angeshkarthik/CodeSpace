@@ -272,9 +272,28 @@ export const TraceModal: React.FC<TraceModalProps> = ({
               )}
               <button
                 onClick={onRequestTrace}
-                className="mt-auto px-3 py-2 bg-violet-700 hover:bg-violet-600 text-white text-xs font-semibold rounded transition-colors"
+                className="mt-auto px-4 py-1.5 bg-violet-700 hover:bg-violet-600 text-white text-xs font-semibold rounded shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-violet-500/50"
               >
                 Retry Trace
+              </button>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!isLoading && !result && !error && (
+            <div className="flex flex-col items-center justify-center flex-1 py-10 text-gray-500 gap-3 px-4 text-center">
+              <Activity className="w-8 h-8 opacity-30" />
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-gray-300">No trace data</p>
+                <p className="text-[11px]">
+                  Run the trace to see step-by-step execution and variable state changes.
+                </p>
+              </div>
+              <button
+                onClick={onRequestTrace}
+                className="mt-2 px-4 py-1.5 bg-violet-700 hover:bg-violet-600 text-white text-xs font-semibold rounded shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-violet-500/50"
+              >
+                Start Trace
               </button>
             </div>
           )}
@@ -421,14 +440,14 @@ export const TraceModal: React.FC<TraceModalProps> = ({
                   <button
                     onClick={handlePrev}
                     disabled={currentStep === 0}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] disabled:opacity-40 text-gray-200 rounded text-xs font-medium transition-colors border border-[#30363d]"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] disabled:opacity-40 text-gray-200 rounded text-xs font-medium transition-colors border border-[#30363d] focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-violet-500/50"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" /> Previous
                   </button>
                   <button
                     onClick={handleNext}
                     disabled={currentStep >= totalSteps - 1}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] disabled:opacity-40 text-gray-200 rounded text-xs font-medium transition-colors border border-[#30363d]"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] disabled:opacity-40 text-gray-200 rounded text-xs font-medium transition-colors border border-[#30363d] focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-violet-500/50"
                   >
                     Next <ChevronRight className="w-3.5 h-3.5" />
                   </button>
@@ -438,7 +457,7 @@ export const TraceModal: React.FC<TraceModalProps> = ({
                 <div className="flex gap-2">
                   <button
                     onClick={handleRestart}
-                    className="p-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded border border-[#30363d] transition-colors"
+                    className="p-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded border border-[#30363d] transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-violet-500/50"
                     title="Restart from step 1"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
@@ -446,7 +465,7 @@ export const TraceModal: React.FC<TraceModalProps> = ({
                   <button
                     onClick={() => setIsPlaying((p) => !p)}
                     disabled={currentStep >= totalSteps - 1 && !isPlaying}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-violet-700/80 hover:bg-violet-600 disabled:opacity-40 text-white rounded text-xs font-medium transition-colors"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-violet-700/80 hover:bg-violet-600 disabled:opacity-40 text-white rounded text-xs font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-violet-500/50"
                   >
                     {isPlaying ? <><Pause className="w-3.5 h-3.5" /> Pause</> : <><Play className="w-3.5 h-3.5 fill-current" /> Play</>}
                   </button>

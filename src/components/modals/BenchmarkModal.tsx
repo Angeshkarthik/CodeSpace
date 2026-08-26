@@ -386,7 +386,7 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
           {isBenchmarking ? (
             <button
               onClick={onCancelBenchmark}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-red-900/30 hover:bg-red-900/50 border border-red-700/40 text-red-300 rounded text-xs font-semibold transition-colors"
+              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-red-900/30 hover:bg-red-900/50 border border-red-700/40 text-red-300 rounded text-xs font-semibold transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-red-500/50"
             >
               <XCircle className="w-3.5 h-3.5" />
               Cancel Benchmark
@@ -395,7 +395,7 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
             <>
               <button
                 onClick={handleStart}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-amber-600/80 hover:bg-amber-500/80 text-white rounded text-xs font-semibold transition-colors"
+                className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-amber-600/80 hover:bg-amber-500/80 text-white rounded text-xs font-semibold transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-amber-500/50"
               >
                 <Play className="w-3.5 h-3.5 fill-current" />
                 Run Benchmark ({selectedRuns} runs)

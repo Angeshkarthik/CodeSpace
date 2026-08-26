@@ -44,13 +44,32 @@ export const CodeAnalysisModal: React.FC<CodeAnalysisModalProps> = ({
   testSummary,
   executionResult
 }) => {
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen || !result) return null;
 
   const { structure, complexity, issues, suggestions, dsaPatterns, language } = result;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 animate-in fade-in duration-150">
-      <div className="bg-[#161b22] border border-[#30363d] rounded-lg shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[88vh]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 animate-in fade-in duration-150"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className="bg-[#161b22] border border-[#30363d] rounded-lg shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[88vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Modal Header */}
         <div className="px-4 py-3 border-b border-[#30363d] flex items-center justify-between bg-[#0d1117]/90">
           <div className="flex items-center gap-2">
@@ -282,12 +301,12 @@ export const CodeAnalysisModal: React.FC<CodeAnalysisModalProps> = ({
           </div>
 
           {/* DSA Algorithmic Pattern Hints */}
-          {dsaPatterns.length > 0 && (
-            <div className="p-3 bg-[#0d1117] border border-[#30363d] rounded-md space-y-2">
-              <h3 className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                Detected DSA Algorithmic Patterns
-              </h3>
+          <div className="p-3 bg-[#0d1117] border border-[#30363d] rounded-md space-y-2">
+            <h3 className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              Detected DSA Algorithmic Patterns
+            </h3>
+            {dsaPatterns.length > 0 ? (
               <div className="space-y-1.5">
                 {dsaPatterns.map((pat) => (
                   <div key={pat.id} className="p-2 bg-[#161b22] border border-[#30363d] rounded flex items-start gap-2">
@@ -298,16 +317,20 @@ export const CodeAnalysisModal: React.FC<CodeAnalysisModalProps> = ({
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            ) : (
+              <p className="text-[11px] text-gray-500 bg-[#161b22] border border-[#30363d] rounded p-2">
+                No specific DSA algorithmic patterns detected in the current code structure.
+              </p>
+            )}
+          </div>
 
           {/* Potential Issues */}
-          {issues.length > 0 && (
-            <div className="p-3 bg-[#0d1117] border border-[#30363d] rounded-md space-y-2">
-              <h3 className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
-                <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
-                Potential Safety & Static Issues ({issues.length})
-              </h3>
+          <div className="p-3 bg-[#0d1117] border border-[#30363d] rounded-md space-y-2">
+            <h3 className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
+              <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
+              Potential Safety & Static Issues ({issues.length})
+            </h3>
+            {issues.length > 0 ? (
               <div className="space-y-2">
                 {issues.map((issue) => (
                   <div
@@ -337,16 +360,21 @@ export const CodeAnalysisModal: React.FC<CodeAnalysisModalProps> = ({
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="flex items-center gap-1.5 p-2 bg-emerald-500/5 border border-emerald-500/30 rounded text-emerald-300 text-[11px]">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                No static issues or vulnerabilities detected.
+              </div>
+            )}
+          </div>
 
           {/* Suggestions */}
-          {suggestions.length > 0 && (
-            <div className="p-3 bg-[#0d1117] border border-[#30363d] rounded-md space-y-2">
-              <h3 className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
-                <Lightbulb className="w-3.5 h-3.5 text-emerald-400" />
-                Optimization & Structural Suggestions
-              </h3>
+          <div className="p-3 bg-[#0d1117] border border-[#30363d] rounded-md space-y-2">
+            <h3 className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
+              <Lightbulb className="w-3.5 h-3.5 text-emerald-400" />
+              Optimization & Structural Suggestions
+            </h3>
+            {suggestions.length > 0 ? (
               <div className="space-y-2">
                 {suggestions.map((sug) => (
                   <div key={sug.id} className="p-2.5 bg-[#161b22] border border-[#30363d] rounded text-xs space-y-1">
@@ -355,8 +383,12 @@ export const CodeAnalysisModal: React.FC<CodeAnalysisModalProps> = ({
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            ) : (
+              <p className="text-[11px] text-gray-500 bg-[#161b22] border border-[#30363d] rounded p-2">
+                No structural or performance optimization suggestions available at this time.
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Modal Footer */}
@@ -364,7 +396,7 @@ export const CodeAnalysisModal: React.FC<CodeAnalysisModalProps> = ({
           <span>Deterministic analysis & execution evidence are the source of truth</span>
           <button
             onClick={onClose}
-            className="px-3 py-1 bg-[#21262d] hover:bg-[#30363d] text-gray-200 rounded text-xs font-medium border border-[#30363d] transition-colors cursor-pointer"
+            className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
           >
             Close
           </button>

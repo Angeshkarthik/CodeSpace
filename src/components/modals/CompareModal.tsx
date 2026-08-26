@@ -62,8 +62,16 @@ export const CompareModal: React.FC<CompareModalProps> = ({
   const monacoLanguage = MONACO_LANG_MAP[snapshotB.language] || 'plaintext';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-      <div className="flex flex-col w-full max-w-6xl h-[90vh] bg-[#0d1117] border border-[#30363d] rounded-xl shadow-2xl overflow-hidden pointer-events-auto">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className="flex flex-col w-full max-w-6xl h-[90vh] bg-[#0d1117] border border-[#30363d] rounded-xl shadow-2xl overflow-hidden pointer-events-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
 
         {/* ── Modal Header ── */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-[#30363d] bg-[#161b22] shrink-0">
@@ -448,7 +456,7 @@ export const CompareModal: React.FC<CompareModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 bg-[#21262d] hover:bg-[#30363d] active:bg-[#161b22] text-gray-200 border border-[#30363d] rounded text-xs font-medium transition-colors cursor-pointer"
+            className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
           >
             Close
           </button>

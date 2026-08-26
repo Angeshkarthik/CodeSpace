@@ -78,16 +78,16 @@ export const PracticeAnalytics: React.FC<PracticeAnalyticsProps> = ({
       {/* 1. TOP SUMMARY CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Total Problems */}
-        <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm flex flex-col justify-between">
+        <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm flex flex-col justify-between min-w-0">
           <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-medium uppercase tracking-wider">Total Problems</span>
-            <Target className="w-4 h-4 text-cyan-400" />
+            <span className="text-xs font-medium uppercase tracking-wider truncate">Total Problems</span>
+            <Target className="w-4 h-4 text-cyan-400 shrink-0" />
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold text-white">{overall.totalProblems}</span>
             <span className="text-xs text-slate-500">problems</span>
           </div>
-          <div className="mt-2 text-xs text-slate-400 flex items-center gap-1.5">
+          <div className="mt-2 text-xs text-slate-400 flex items-center gap-1.5 truncate">
             <span className="text-emerald-400 font-semibold">{overall.solvedProblems}</span> solved
             <span className="text-slate-600">•</span>
             <span className="text-amber-400 font-semibold">{overall.inProgressProblems}</span> active
@@ -95,10 +95,10 @@ export const PracticeAnalytics: React.FC<PracticeAnalyticsProps> = ({
         </div>
 
         {/* Solved Problems */}
-        <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm flex flex-col justify-between">
+        <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm flex flex-col justify-between min-w-0">
           <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-medium uppercase tracking-wider">Problems Solved</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span className="text-xs font-medium uppercase tracking-wider truncate">Problems Solved</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold text-emerald-400">{overall.solvedProblems}</span>
@@ -115,45 +115,45 @@ export const PracticeAnalytics: React.FC<PracticeAnalyticsProps> = ({
         </div>
 
         {/* Solve Rate */}
-        <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm flex flex-col justify-between">
+        <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm flex flex-col justify-between min-w-0">
           <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-medium uppercase tracking-wider">Solve Accuracy</span>
-            <TrendingUp className="w-4 h-4 text-blue-400" />
+            <span className="text-xs font-medium uppercase tracking-wider truncate">Solve Accuracy</span>
+            <TrendingUp className="w-4 h-4 text-blue-400 shrink-0" />
           </div>
           <div className="flex items-baseline gap-1">
             <span className="text-2xl font-bold text-white">{overall.solveRate}%</span>
           </div>
-          <div className="mt-2 text-xs text-slate-400">
+          <div className="mt-2 text-xs text-slate-400 truncate">
             Across <span className="text-slate-200 font-semibold">{overall.attemptedProblems}</span> attempted problems
           </div>
         </div>
 
         {/* Total Attempts */}
-        <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm flex flex-col justify-between">
+        <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm flex flex-col justify-between min-w-0">
           <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-medium uppercase tracking-wider">Total Attempts</span>
-            <Flame className="w-4 h-4 text-amber-400" />
+            <span className="text-xs font-medium uppercase tracking-wider truncate">Total Attempts</span>
+            <Flame className="w-4 h-4 text-amber-400 shrink-0" />
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl font-bold text-white">{overall.totalAttempts}</span>
             <span className="text-xs text-slate-500">runs</span>
           </div>
-          <div className="mt-2 text-xs text-slate-400">
+          <div className="mt-2 text-xs text-slate-400 truncate">
             <span className="text-emerald-400 font-semibold">{outcomes.solved}</span> passed attempts
           </div>
         </div>
 
         {/* Avg Attempts per Problem */}
-        <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm flex flex-col justify-between">
+        <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm flex flex-col justify-between min-w-0">
           <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-medium uppercase tracking-wider">Avg Attempts / Solved</span>
-            <Award className="w-4 h-4 text-violet-400" />
+            <span className="text-xs font-medium uppercase tracking-wider truncate">Avg Attempts / Solved</span>
+            <Award className="w-4 h-4 text-violet-400 shrink-0" />
           </div>
           <div className="flex items-baseline gap-1">
             <span className="text-2xl font-bold text-white">{overall.averageAttemptsToSolve}</span>
             <span className="text-xs text-slate-500">attempts</span>
           </div>
-          <div className="mt-2 text-xs text-slate-400">
+          <div className="mt-2 text-xs text-slate-400 truncate">
             Overall avg: <span className="text-slate-300 font-semibold">{overall.averageAttemptsPerProblem}</span> / prob
           </div>
         </div>
@@ -349,9 +349,9 @@ export const PracticeAnalytics: React.FC<PracticeAnalyticsProps> = ({
                       onFilterByTopic ? 'cursor-pointer' : ''
                     }`}
                   >
-                    <td className="py-2.5 px-4 font-medium text-slate-200 flex items-center gap-2">
-                      <span>{item.topic}</span>
-                      {onFilterByTopic && <Filter className="w-3 h-3 text-slate-600 hover:text-cyan-400" />}
+                    <td className="py-2.5 px-4 font-medium text-slate-200 flex items-center gap-2 min-w-0">
+                      <span className="truncate max-w-[200px] sm:max-w-[320px]" title={item.topic}>{item.topic}</span>
+                      {onFilterByTopic && <Filter className="w-3 h-3 text-slate-600 hover:text-cyan-400 shrink-0" />}
                     </td>
                     <td className="py-2.5 px-4 text-center font-mono text-slate-400">{item.problemCount}</td>
                     <td className="py-2.5 px-4 text-center font-mono text-emerald-400 font-semibold">

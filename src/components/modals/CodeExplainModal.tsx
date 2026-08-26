@@ -36,11 +36,30 @@ export const CodeExplainModal: React.FC<CodeExplainModalProps> = ({
   error,
   language
 }) => {
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 animate-in fade-in duration-150">
-      <div className="bg-[#161b22] border border-[#30363d] rounded-lg shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[88vh]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 animate-in fade-in duration-150"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        className="bg-[#161b22] border border-[#30363d] rounded-lg shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[88vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="px-4 py-3 border-b border-[#30363d] flex items-center justify-between bg-[#0d1117]/90 flex-shrink-0">
           <div className="flex items-center gap-2">
@@ -284,7 +303,7 @@ export const CodeExplainModal: React.FC<CodeExplainModalProps> = ({
           <span>Explaining your code, not critiquing it</span>
           <button
             onClick={onClose}
-            className="px-3 py-1 bg-[#21262d] hover:bg-[#30363d] text-gray-200 rounded text-xs font-medium border border-[#30363d] transition-colors cursor-pointer"
+            className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
           >
             Close
           </button>

@@ -116,6 +116,21 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
     }
   };
 
+  React.useEffect(() => {
+    if (!problemToDelete && !problemToLink) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (problemToDelete) {
+          setProblemToDelete(null);
+        } else if (problemToLink) {
+          setProblemToLink(null);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [problemToDelete, problemToLink]);
+
   const renderDifficultyBadge = (difficulty: PracticeDifficulty) => {
     switch (difficulty) {
       case 'Easy':
@@ -289,21 +304,21 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                       <div>
                         {/* Header Row: Title & Badges */}
                         <div className="flex items-start justify-between gap-2 mb-2">
-                          <div>
-                            <h3 className="text-sm font-bold text-gray-100 group-hover:text-emerald-400 transition-colors">
+                          <div className="min-w-0 flex-1">
+                            <h3 className="text-sm font-bold text-gray-100 group-hover:text-emerald-400 transition-colors break-words">
                               {prob.title}
                             </h3>
-                            <div className="flex items-center gap-2 mt-1">
-                              <span className="flex items-center gap-1 text-[11px] text-gray-400">
-                                <Tag className="w-3 h-3 text-sky-400" />
-                                {prob.topic}
+                            <div className="flex items-center gap-2 mt-1 flex-wrap">
+                              <span className="flex items-center gap-1 text-[11px] text-gray-400 min-w-0 truncate">
+                                <Tag className="w-3 h-3 text-sky-400 shrink-0" />
+                                <span className="truncate">{prob.topic}</span>
                               </span>
                               {renderDifficultyBadge(prob.difficulty)}
                             </div>
                           </div>
 
                           {/* Status Dropdown Trigger */}
-                          <div className="relative">
+                          <div className="relative shrink-0">
                             <select
                               value={prob.status}
                               onChange={(e) =>
@@ -320,18 +335,18 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
 
                         {/* Description Excerpt */}
                         {prob.description && (
-                          <p className="text-xs text-gray-400 line-clamp-2 mb-3 bg-[#0d1117]/60 p-2 rounded border border-[#30363d]/50 font-sans">
+                          <p className="text-xs text-gray-400 line-clamp-2 mb-3 bg-[#0d1117]/60 p-2 rounded border border-[#30363d]/50 font-sans break-words">
                             {prob.description}
                           </p>
                         )}
                       </div>
 
                       {/* Footer Row: Linked Program Info & Action Buttons */}
-                      <div className="pt-3 border-t border-[#30363d]/70 flex items-center justify-between gap-2">
+                      <div className="pt-3 border-t border-[#30363d]/70 flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
                         {/* Linked Program Tag */}
-                        <div className="text-[11px] text-gray-400 truncate">
+                        <div className="text-[11px] text-gray-400 truncate min-w-0 flex-1">
                           {linkedProgram ? (
-                            <span className="flex items-center gap-1 font-mono text-emerald-400">
+                            <span className="flex items-center gap-1 font-mono text-emerald-400 min-w-0">
                               <FileCode className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                               <span className="truncate">{linkedProgram.name}</span>
                             </span>
@@ -341,7 +356,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center gap-1.5 shrink-0">
+                        <div className="flex items-center gap-1.5 shrink-0 flex-wrap sm:flex-nowrap">
                           {/* Attempts Button */}
                           <button
                             onClick={() => setHistoryProblem(prob)}
@@ -467,8 +482,16 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
 
       {/* Delete Confirmation Modal */}
       {problemToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-150">
-          <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-md w-full space-y-4 shadow-2xl">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-150"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setProblemToDelete(null);
+          }}
+        >
+          <div
+            className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-md w-full space-y-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center gap-3">
               <div className="p-2 rounded bg-red-500/10 text-red-400 border border-red-500/20">
                 <AlertCircle className="w-5 h-5" />
@@ -503,8 +526,16 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
 
       {/* Link / Create Program Modal for Unlinked Problem */}
       {problemToLink && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-150">
-          <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-md w-full space-y-4 shadow-2xl">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4 animate-in fade-in duration-150"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setProblemToLink(null);
+          }}
+        >
+          <div
+            className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-md w-full space-y-4 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between pb-2 border-b border-[#30363d]">
               <h3 className="text-sm font-semibold text-gray-100">Start Practice: {problemToLink.title}</h3>
               <button

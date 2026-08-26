@@ -52,6 +52,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
+  React.useEffect(() => {
+    if (!progToDelete) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setProgToDelete(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [progToDelete]);
+
   return (
     <>
       <aside
@@ -70,12 +81,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           )}
           <button
             onClick={onToggleCollapse}
-            className={`p-1 text-gray-400 hover:text-gray-200 hover:bg-[#21262d] rounded transition-colors ${
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            className={`p-1 text-gray-400 hover:text-gray-200 hover:bg-[#21262d] rounded transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50 ${
               isCollapsed ? 'mx-auto' : ''
             }`}
             title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >
-            {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+            {isCollapsed ? <ChevronRight className="w-4 h-4" aria-hidden="true" /> : <ChevronLeft className="w-4 h-4" aria-hidden="true" />}
           </button>
         </div>
 
@@ -83,22 +95,33 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="p-2 border-b border-[#30363d]/60">
           <button
             onClick={onOpenNewModal}
-            className={`w-full flex items-center justify-center gap-2 bg-[#21262d] hover:bg-[#30363d] text-gray-200 border border-[#30363d] rounded text-xs font-medium py-1.5 transition-colors ${
+            aria-label="Create new program"
+            className={`w-full flex items-center justify-center gap-2 bg-[#21262d] hover:bg-[#30363d] text-gray-200 border border-[#30363d] rounded text-xs font-medium py-1.5 transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50 ${
               isCollapsed ? 'px-1' : 'px-3'
             }`}
             title="New Program"
           >
-            <Plus className="w-3.5 h-3.5 text-emerald-400" />
+            <Plus className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />
             {!isCollapsed && <span>New Program</span>}
           </button>
         </div>
 
         {/* Program List */}
-        <div className="flex-1 overflow-y-auto p-1.5 space-y-0.5">
+        <div className="flex-1 overflow-y-auto p-1.5 space-y-0.5" role="navigation" aria-label="Program workspace files">
           {programs.length === 0 ? (
             !isCollapsed && (
-              <div className="p-4 text-center text-xs text-gray-500 italic">
-                No programs created yet.
+              <div className="p-6 flex flex-col items-center justify-center text-center space-y-3">
+                <FileCode2 className="w-8 h-8 text-gray-600" aria-hidden="true" />
+                <div className="space-y-1">
+                  <p className="text-xs font-medium text-gray-300">No programs</p>
+                  <p className="text-[11px] text-gray-500 leading-relaxed">Create a new program to start coding.</p>
+                </div>
+                <button
+                  onClick={onOpenNewModal}
+                  className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-[11px] font-medium transition-colors border border-[#30363d] focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                >
+                  Create Program
+                </button>
               </div>
             )
           ) : (
@@ -110,7 +133,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <button
                     key={prog.uuid}
                     onClick={() => onSelectProgram(prog.uuid)}
-                    className={`w-full py-2 flex justify-center rounded transition-colors ${
+                    aria-label={`Select program ${prog.name} (${STARTER_TEMPLATES[prog.language]?.name || prog.language})`}
+                    className={`w-full py-2 flex justify-center rounded transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50 ${
                       isActive ? 'bg-[#282e38] text-emerald-400 border border-emerald-500/30' : 'text-gray-400 hover:bg-[#21262d]'
                     }`}
                     title={`${prog.name} (${STARTER_TEMPLATES[prog.language]?.name || prog.language})`}
@@ -124,38 +148,48 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <div
                   key={prog.uuid}
                   onClick={() => onSelectProgram(prog.uuid)}
-                  className={`group flex items-center justify-between px-2.5 py-1.5 rounded text-xs cursor-pointer transition-colors border ${
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      onSelectProgram(prog.uuid);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Select program ${prog.name}`}
+                  className={`group flex items-center justify-between px-2.5 py-1.5 rounded text-xs cursor-pointer transition-colors border focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50 ${
                     isActive
                       ? 'bg-[#282e38] border-emerald-500/40 text-emerald-300 font-medium'
                       : 'border-transparent text-gray-300 hover:bg-[#21262d] hover:text-gray-100'
                   }`}
                 >
                   <div className="flex items-center gap-2 min-w-0 flex-1">
-                    {getLanguageBadge(prog.language)}
+                    <div className="shrink-0">{getLanguageBadge(prog.language)}</div>
                     <span className="truncate font-mono text-[12px]">{prog.name}</span>
                   </div>
 
-                  {/* Hover action icons */}
-                  <div className="hidden group-hover:flex items-center gap-1">
+                  {/* Action icons (visible on hover and focus-within) */}
+                  <div className="hidden group-hover:flex group-focus-within:flex items-center gap-1 shrink-0">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         onOpenRenameModal(prog);
                       }}
-                      className="p-1 text-gray-400 hover:text-blue-400 hover:bg-[#30363d] rounded transition-colors"
+                      aria-label={`Rename program ${prog.name}`}
+                      className="p-1 text-gray-400 hover:text-blue-400 hover:bg-[#30363d] rounded transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
                       title="Rename"
                     >
-                      <Edit2 className="w-3 h-3" />
+                      <Edit2 className="w-3 h-3" aria-hidden="true" />
                     </button>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setProgToDelete(prog);
                       }}
-                      className="p-1 text-gray-400 hover:text-red-400 hover:bg-[#30363d] rounded transition-colors"
+                      aria-label={`Delete program ${prog.name}`}
+                      className="p-1 text-gray-400 hover:text-red-400 hover:bg-[#30363d] rounded transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
                       title="Delete"
                     >
-                      <Trash2 className="w-3 h-3" />
+                      <Trash2 className="w-3 h-3" aria-hidden="true" />
                     </button>
                   </div>
                 </div>
@@ -175,19 +209,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Delete Program Confirmation Modal */}
       {progToDelete && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 w-full max-w-sm shadow-2xl space-y-4">
+        <div
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setProgToDelete(null);
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-program-dialog-title"
+            className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 w-full max-w-sm shadow-2xl space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center gap-2 text-red-400 font-semibold text-sm">
-              <Trash2 className="w-4 h-4" />
-              <span>Delete Program?</span>
+              <Trash2 className="w-4 h-4" aria-hidden="true" />
+              <span id="delete-program-dialog-title">Delete Program?</span>
             </div>
-            <p className="text-xs text-gray-300">
-              Are you sure you want to delete <span className="font-mono text-white font-semibold">"{progToDelete.name}"</span>? This will permanently remove its test cases and saved versions.
+            <p className="text-xs text-gray-300 break-words">
+              Are you sure you want to delete <span className="font-mono text-white font-semibold break-all">"{progToDelete.name}"</span>? This will permanently remove its test cases and saved versions.
             </p>
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 onClick={() => setProgToDelete(null)}
-                className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium cursor-pointer"
+                className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
               >
                 Cancel
               </button>
@@ -196,7 +241,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onDeleteProgram(progToDelete.uuid);
                   setProgToDelete(null);
                 }}
-                className="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold cursor-pointer"
+                className="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
               >
                 Delete
               </button>

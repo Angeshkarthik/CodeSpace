@@ -151,7 +151,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   return (
     <div className="h-10 bg-[#161b22] border-b border-[#30363d] px-3 flex items-center justify-between select-none z-10 relative">
       {/* ── Left: Primary Actions ── */}
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 min-w-0">
 
         {/* ▶ Run — strongest primary action */}
         <button
@@ -159,16 +159,16 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           disabled={disabled || isRunning}
           aria-label="Run Program"
           title="Run Program (Ctrl + S then Run)"
-          className="flex items-center gap-1.5 px-3.5 py-1 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 disabled:opacity-50 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer disabled:cursor-not-allowed"
+          className="flex items-center gap-1.5 px-3.5 py-1 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 disabled:opacity-50 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
         >
           {isRunning ? (
             <>
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
               <span>Running…</span>
             </>
           ) : (
             <>
-              <Play className="w-3.5 h-3.5 fill-current" />
+              <Play className="w-3.5 h-3.5 fill-current" aria-hidden="true" />
               <span>Run</span>
             </>
           )}
@@ -182,9 +182,9 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           disabled={disabled}
           aria-label="Open Test Panel"
           title="Test Cases"
-          className="flex items-center gap-1.5 px-2.5 py-1 text-gray-300 hover:text-gray-100 hover:bg-[#21262d] disabled:opacity-40 rounded text-xs font-medium cursor-pointer transition-colors disabled:cursor-not-allowed"
+          className="flex items-center gap-1.5 px-2.5 py-1 text-gray-300 hover:text-gray-100 hover:bg-[#21262d] disabled:opacity-40 rounded text-xs font-medium cursor-pointer transition-colors disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
         >
-          <FlaskConical className="w-3.5 h-3.5 text-emerald-400" />
+          <FlaskConical className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />
           <span>Test</span>
         </button>
 
@@ -194,9 +194,9 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           disabled={disabled}
           aria-label="Open Code Review"
           title="Code Review — static analysis & AI insights"
-          className="flex items-center gap-1.5 px-2.5 py-1 text-gray-300 hover:text-gray-100 hover:bg-[#21262d] disabled:opacity-40 rounded text-xs font-medium cursor-pointer transition-colors disabled:cursor-not-allowed"
+          className="flex items-center gap-1.5 px-2.5 py-1 text-gray-300 hover:text-gray-100 hover:bg-[#21262d] disabled:opacity-40 rounded text-xs font-medium cursor-pointer transition-colors disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
         >
-          <Search className="w-3.5 h-3.5 text-sky-400" />
+          <Search className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
           <span>Review</span>
         </button>
 
@@ -206,12 +206,12 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           disabled={disabled || isExplaining}
           aria-label="Explain Code"
           title="Explain Code — AI analysis & explanation"
-          className="flex items-center gap-1.5 px-2.5 py-1 text-gray-300 hover:text-gray-100 hover:bg-[#21262d] disabled:opacity-40 rounded text-xs font-medium cursor-pointer transition-colors disabled:cursor-not-allowed"
+          className="flex items-center gap-1.5 px-2.5 py-1 text-gray-300 hover:text-gray-100 hover:bg-[#21262d] disabled:opacity-40 rounded text-xs font-medium cursor-pointer transition-colors disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
         >
           {isExplaining ? (
-            <Loader2 className="w-3.5 h-3.5 animate-spin text-violet-400" />
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-violet-400" aria-hidden="true" />
           ) : (
-            <Brain className="w-3.5 h-3.5 text-violet-400" />
+            <Brain className="w-3.5 h-3.5 text-violet-400" aria-hidden="true" />
           )}
           <span>Explain</span>
         </button>
@@ -228,13 +228,13 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
             aria-expanded={isMoreOpen}
             aria-haspopup="true"
             title="More Tools"
-            className={`flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${
+            className={`flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50 ${
               isMoreOpen
                 ? 'bg-[#21262d] text-gray-100 border border-[#30363d]'
                 : 'text-gray-400 hover:text-gray-200 hover:bg-[#21262d]'
             }`}
           >
-            <MoreHorizontal className="w-3.5 h-3.5" />
+            <MoreHorizontal className="w-3.5 h-3.5" aria-hidden="true" />
             <span>More</span>
           </button>
 
@@ -249,7 +249,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
               {/* ─ Execution ─ */}
               <SectionLabel label="Execution" />
               <MoreMenuItem
-                icon={<Activity className="w-3.5 h-3.5 text-violet-400" />}
+                icon={<Activity className="w-3.5 h-3.5 text-violet-400" aria-hidden="true" />}
                 label="Trace"
                 description="Step through program execution"
                 onClick={() => closeAndCall(onOpenTraceModal)}
@@ -257,7 +257,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
                 isLoading={isTracing}
               />
               <MoreMenuItem
-                icon={<Gauge className="w-3.5 h-3.5 text-amber-400" />}
+                icon={<Gauge className="w-3.5 h-3.5 text-amber-400" aria-hidden="true" />}
                 label="Benchmark"
                 description="Measure observed runtime"
                 onClick={() => closeAndCall(onOpenBenchmarkModal)}
@@ -270,21 +270,21 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
               {/* ─ Code ─ */}
               <SectionLabel label="Code" />
               <MoreMenuItem
-                icon={<ArrowLeftRight className="w-3.5 h-3.5 text-emerald-400" />}
+                icon={<ArrowLeftRight className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />}
                 label="Compare"
                 description="Compare two code versions"
                 onClick={() => closeAndCall(onOpenCompareModal)}
                 disabled={disabled}
               />
               <MoreMenuItem
-                icon={<Save className="w-3.5 h-3.5 text-emerald-400" />}
+                icon={<Save className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />}
                 label="Save Version"
                 description="Create a history checkpoint"
                 onClick={() => closeAndCall(onOpenSaveVersionModal)}
                 disabled={disabled}
               />
               <MoreMenuItem
-                icon={<History className="w-3.5 h-3.5 text-sky-400" />}
+                icon={<History className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />}
                 label="History"
                 description="View and restore saved versions"
                 onClick={() => closeAndCall(onOpenHistoryModal)}
@@ -297,7 +297,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
                   <Divider />
                   <SectionLabel label="Practice" />
                   <MoreMenuItem
-                    icon={<Target className="w-3.5 h-3.5 text-emerald-400" />}
+                    icon={<Target className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />}
                     label="Record Attempt"
                     description={`Save attempt for "${activePracticeProblem.title}"`}
                     onClick={() => closeAndCall(onRecordAttempt)}
@@ -311,23 +311,23 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
       </div>
 
       {/* ── Right: Save Status ── */}
-      <div className="flex items-center gap-3 text-xs">
+      <div className="flex items-center gap-3 text-xs shrink-0">
         <button
           onClick={onManualSave}
           disabled={disabled}
           aria-label="Manual Save (Ctrl+S)"
           title="Manual Save (Ctrl + S)"
-          className="flex items-center gap-1.5 text-gray-500 hover:text-gray-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex items-center gap-1.5 text-gray-500 hover:text-gray-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50 rounded px-1"
         >
           {isSaving ? (
             <span className="text-amber-400 animate-pulse font-mono text-[11px]">Saving…</span>
           ) : isUnsaved ? (
             <span className="flex items-center gap-1 text-amber-400 font-mono text-[11px]">
-              <Save className="w-3 h-3" /> Unsaved
+              <Save className="w-3 h-3" aria-hidden="true" /> Unsaved
             </span>
           ) : (
             <span className="flex items-center gap-1 text-emerald-500 font-mono text-[11px]">
-              <CheckCircle2 className="w-3 h-3" /> Saved
+              <CheckCircle2 className="w-3 h-3" aria-hidden="true" /> Saved
             </span>
           )}
         </button>
