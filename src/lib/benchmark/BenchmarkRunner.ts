@@ -19,9 +19,7 @@ import {
 //
 // Timing source:
 //   ExecutionResult.executionTimeMs — this is the server-side timing
-//   from LocalExecutionProvider (wall-clock around child process) or
-//   the provider-reported runtime from Piston for Online mode.
-//   In Online mode Piston reports actual run duration, not network latency.
+//   from LocalExecutionProvider (wall-clock around child process).
 //   If the provider returns no timing, we fall back to client-side round-trip
 //   timing (clearly labelled in the result as partial info).
 //
@@ -95,7 +93,7 @@ export async function runBenchmark(
     const clientRoundTrip = Math.round(performance.now() - clientStart);
 
     // Determine per-run timing:
-    // Prefer provider-reported executionTimeMs (server-side / Piston runtime).
+    // Prefer provider-reported executionTimeMs (server-side runtime).
     // Fall back to client round-trip ONLY if provider gives no timing.
     const isRoundTripFallback = execRes.executionTimeMs === undefined || execRes.executionTimeMs === null;
     const timingMs = execRes.executionTimeMs ?? clientRoundTrip;

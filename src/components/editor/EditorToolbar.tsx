@@ -22,7 +22,6 @@ import { PracticeProblem } from '@/lib/practice/types';
 
 interface EditorToolbarProps {
   currentProgram: Program | null;
-  mode?: string;
   onRun: () => void;
   onOpenTestPanel: () => void;
   onOpenReviewModal: () => void;
@@ -91,7 +90,6 @@ const Divider = () => <div className="border-t border-[#30363d] my-1" />;
 // ─── EditorToolbar ───────────────────────────────────────────────────────────
 export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   currentProgram,
-  mode,
   onRun,
   onOpenTestPanel,
   onOpenReviewModal,
@@ -202,23 +200,21 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           <span>Review</span>
         </button>
 
-        {/* 🧠 Explain — visible ONLY in Online mode */}
-        {mode === 'online' && (
-          <button
-            onClick={onOpenExplainModal}
-            disabled={disabled || isExplaining}
-            aria-label="Explain Code"
-            title="Explain Code — AI analysis & explanation"
-            className="flex items-center gap-1.5 px-2.5 py-1 text-gray-300 hover:text-gray-100 hover:bg-[#21262d] disabled:opacity-40 rounded text-xs font-medium cursor-pointer transition-colors disabled:cursor-not-allowed"
-          >
-            {isExplaining ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin text-violet-400" />
-            ) : (
-              <Brain className="w-3.5 h-3.5 text-violet-400" />
-            )}
-            <span>Explain</span>
-          </button>
-        )}
+        {/* 🧠 Explain — AI analysis & explanation */}
+        <button
+          onClick={onOpenExplainModal}
+          disabled={disabled || isExplaining}
+          aria-label="Explain Code"
+          title="Explain Code — AI analysis & explanation"
+          className="flex items-center gap-1.5 px-2.5 py-1 text-gray-300 hover:text-gray-100 hover:bg-[#21262d] disabled:opacity-40 rounded text-xs font-medium cursor-pointer transition-colors disabled:cursor-not-allowed"
+        >
+          {isExplaining ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-violet-400" />
+          ) : (
+            <Brain className="w-3.5 h-3.5 text-violet-400" />
+          )}
+          <span>Explain</span>
+        </button>
 
         <div className="h-4 w-px bg-[#30363d] mx-0.5" />
 

@@ -22,7 +22,6 @@ interface BenchmarkModalProps {
   benchmarkProgress: { completed: number; total: number } | null;
   error: string | null;
   language: LanguageType;
-  mode?: string;
   /** Input currently in the editor Input panel */
   currentInput: string;
   onRunBenchmark: (runs: number) => void;
@@ -117,7 +116,6 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
   benchmarkProgress,
   error,
   language,
-  mode,
   currentInput,
   onRunBenchmark,
   onCancelBenchmark,
@@ -229,7 +227,7 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
             <div className="flex items-start gap-2 bg-amber-900/15 border border-amber-700/30 rounded-lg px-3 py-2">
               <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
               <p className="text-[11px] text-amber-300">
-                Benchmark results are outdated — code, input, language, or mode changed. Run Benchmark again.
+                Benchmark results are outdated — code, input, or language changed. Run Benchmark again.
               </p>
             </div>
           )}

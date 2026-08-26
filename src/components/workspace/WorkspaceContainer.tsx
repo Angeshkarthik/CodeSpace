@@ -170,7 +170,6 @@ export const WorkspaceContainer: React.FC = () => {
   const [programVersions, setProgramVersions] = useState<ProgramVersion[]>([]);
 
   // Execution & Console State
-  const [mode, setMode] = useState<'offline' | 'online'>('offline');
   const [isRunning, setIsRunning] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isConsoleOpen, setIsConsoleOpen] = useState(true);
@@ -1135,7 +1134,6 @@ export const WorkspaceContainer: React.FC = () => {
             {/* Action Toolbar */}
             <EditorToolbar
               currentProgram={activeProgram}
-              mode={mode}
               onRun={handleRunProgram}
               onOpenTestPanel={handleOpenTestPanel}
               onOpenReviewModal={handleOpenReviewModal}

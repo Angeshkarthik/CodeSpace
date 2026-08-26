@@ -12,10 +12,6 @@ import { JavaTraceProvider } from './JavaTraceProvider';
  *     ├── CTraceProvider     (cpp)
  *     ├── PythonTraceProvider (python)
  *     └── JavaTraceProvider  (java)
- *
- * Online mode: tracing via remote execution (e.g. Piston) cannot guarantee
- * reliable instrumented output, so online trace is reported as unsupported.
- * This keeps the system honest — accuracy over coverage.
  */
 export class TraceManager implements ITraceProvider {
   private cProvider = new CTraceProvider('c');

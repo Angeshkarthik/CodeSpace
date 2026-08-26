@@ -44,7 +44,6 @@ export interface TraceRequest {
   language: LanguageType;
   code: string;
   stdin?: string;
-  mode?: string;
   maxSteps?: number;
 }
 

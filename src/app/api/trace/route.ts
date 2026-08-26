@@ -8,7 +8,7 @@ const VALID_LANGUAGES: LanguageType[] = ['c', 'cpp', 'python', 'java'];
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { language, code, stdin = '', mode, maxSteps } = body;
+    const { language, code, stdin = '', maxSteps } = body;
 
     if (!language || !VALID_LANGUAGES.includes(language)) {
       return NextResponse.json(
@@ -49,7 +49,6 @@ export async function POST(req: NextRequest) {
       language: language as LanguageType,
       code,
       stdin,
-      mode,
       maxSteps: safeMaxSteps,
     };
 

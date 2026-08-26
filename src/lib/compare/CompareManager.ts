@@ -191,8 +191,6 @@ export function compareSnapshots(
     // Both benchmarks exist. Verify comparability conditions.
     const inputA = (snapshotA.input ?? '').trim();
     const inputB = (snapshotB.input ?? '').trim();
-    const modeA = snapshotA.mode ?? benchA.executionMode;
-    const modeB = snapshotB.mode ?? benchB.executionMode;
 
     if (inputA !== inputB) {
       benchmarkComp = {
