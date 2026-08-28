@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Editor, { OnMount } from '@monaco-editor/react';
+import { useTheme } from 'next-themes';
 import { LanguageType, AppSettings } from '@/types';
 import { MONACO_LANG_MAP } from '@/lib/constants';
 
@@ -28,6 +29,12 @@ export const MonacoEditorWrapper: React.FC<MonacoEditorWrapperProps> = ({
   const editorRef = useRef<any>(null);
   const monacoRef = useRef<any>(null);
   const traceDecorationsRef = useRef<string[]>([]);
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
@@ -57,7 +64,31 @@ export const MonacoEditorWrapper: React.FC<MonacoEditorWrapperProps> = ({
       }
     });
 
-    monaco.editor.setTheme('codespace-dark');
+    // Define custom light theme matching Phase 5B semantic palette
+    monaco.editor.defineTheme('codespace-light', {
+      base: 'vs',
+      inherit: true,
+      rules: [
+        { token: 'comment', foreground: '6e7781', fontStyle: 'italic' },
+        { token: 'keyword', foreground: 'cf222e', fontStyle: 'bold' },
+        { token: 'string', foreground: '0a3069' },
+        { token: 'number', foreground: '0550ae' },
+        { token: 'type', foreground: '953800' },
+        { token: 'function', foreground: '8250df' },
+      ],
+      colors: {
+        'editor.background': '#ffffff',
+        'editor.foreground': '#1c2128',
+        'editor.lineHighlightBackground': '#f6f8fa',
+        'editorCursor.foreground': '#0969da',
+        'editorLineNumber.foreground': '#8c959f',
+        'editorLineNumber.activeForeground': '#1c2128',
+        'editorIndentGuide.background': '#d0d7de',
+        'editorIndentGuide.activeBackground': '#afb8c1',
+      }
+    });
+
+    monaco.editor.setTheme(resolvedTheme === 'light' ? 'codespace-light' : 'codespace-dark');
 
     // Add keyboard shortcut for Ctrl+S / Cmd+S
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
@@ -98,17 +129,27 @@ export const MonacoEditorWrapper: React.FC<MonacoEditorWrapperProps> = ({
     };
   }, [traceLine]);
 
+  // Sync Monaco theme when resolvedTheme changes
+  useEffect(() => {
+    if (monacoRef.current) {
+      monacoRef.current.editor.setTheme(resolvedTheme === 'light' ? 'codespace-light' : 'codespace-dark');
+    }
+  }, [resolvedTheme]);
+
   const monacoLanguage = MONACO_LANG_MAP[language] || 'plaintext';
+  
+  // Prevent hydration mismatch by using dark theme initially until mounted
+  const currentTheme = mounted && resolvedTheme === 'light' ? 'codespace-light' : 'codespace-dark';
 
   return (
-    <div className="w-full h-full bg-[#0d1117] relative overflow-hidden">
+    <div className="w-full h-full bg-canvas relative overflow-hidden">
       <Editor
         height="100%"
         language={monacoLanguage}
         value={code}
         onChange={(val) => onChange(val || '')}
         onMount={handleEditorDidMount}
-        theme="codespace-dark"
+        theme={currentTheme}
         options={{
           readOnly,
           fontSize: settings.fontSize || 14,
@@ -140,7 +181,7 @@ export const MonacoEditorWrapper: React.FC<MonacoEditorWrapperProps> = ({
           }
         }}
         loading={
-          <div className="flex items-center justify-center h-full bg-[#0d1117] text-xs text-gray-400 font-mono">
+          <div className="flex items-center justify-center h-full bg-canvas text-xs text-muted font-mono">
             Loading Monaco Editor...
           </div>
         }

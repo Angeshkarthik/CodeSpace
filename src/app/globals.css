@@ -1,20 +1,48 @@
 @import "tailwindcss";
 
+@theme {
+  --color-canvas: var(--bg-canvas);
+  --color-surface: var(--bg-surface);
+  --color-surface-elevated: var(--bg-surface-elevated);
+  --color-surface-hover: var(--bg-surface-hover);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-default: var(--border-default);
+  --color-border-active: var(--border-active);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+}
+
 @layer base {
   :root {
-    --background: #0d1117;
-    --foreground: #e6edf3;
-    --sidebar-bg: #161b22;
-    --border-color: #30363d;
-    --hover-bg: #21262d;
-    --active-bg: #282e38;
-    --accent: #3fb950;
-    --accent-blue: #58a6ff;
+    --bg-canvas: hsl(0, 0%, 98%);
+    --bg-surface: hsl(0, 0%, 100%);
+    --bg-surface-elevated: hsl(0, 0%, 100%);
+    --bg-surface-hover: hsl(214, 32%, 96%);
+    --border-subtle: hsl(214, 32%, 91%);
+    --border-default: hsl(214, 32%, 84%);
+    --border-active: hsl(226, 71%, 60%);
+    --text-primary: hsl(222, 47%, 11%);
+    --text-secondary: hsl(215, 16%, 47%);
+    --text-muted: hsl(215, 16%, 65%);
+  }
+
+  .dark {
+    --bg-canvas: hsl(224, 71%, 4%);
+    --bg-surface: hsl(222, 47%, 11%);
+    --bg-surface-elevated: hsl(222, 47%, 14%);
+    --bg-surface-hover: hsl(222, 47%, 16%);
+    --border-subtle: hsl(215, 28%, 17%);
+    --border-default: hsl(215, 28%, 25%);
+    --border-active: hsl(226, 71%, 60%);
+    --text-primary: hsl(210, 40%, 98%);
+    --text-secondary: hsl(215, 20%, 65%);
+    --text-muted: hsl(215, 20%, 50%);
   }
 
   body {
-    background-color: var(--background);
-    color: var(--foreground);
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
     overflow: hidden;
     user-select: none;
@@ -28,22 +56,18 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #0d1117;
+  background: var(--bg-canvas);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #30363d;
+  background: var(--border-subtle);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #484f58;
+  background: var(--border-default);
 }
 
-/* Monaco Editor Overrides */
-.monaco-editor, .monaco-editor .margin, .monaco-editor-background {
-  background-color: #0d1117 !important;
-}
 
 /* Tooltip animations */
 @keyframes fadeIn {

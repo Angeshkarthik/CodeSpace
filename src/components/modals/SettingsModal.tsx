@@ -4,6 +4,7 @@ import React from 'react';
 import { X, Settings as SettingsIcon, Database, ShieldAlert } from 'lucide-react';
 import { AppSettings } from '@/types';
 import { db } from '@/lib/db';
+import { useTheme } from 'next-themes';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -20,6 +21,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onUpdateSettings,
   onResetDatabase
 }) => {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   React.useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -64,6 +71,36 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
         {/* Body */}
         <div className="p-4 space-y-5 text-xs text-gray-300">
+          {/* Appearance / Theme */}
+          <div className="pt-2">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-gray-300">
+                Appearance
+              </span>
+              <span className="text-xs text-gray-500 italic">
+                {mounted ? theme : ''}
+              </span>
+            </div>
+            <div className="flex gap-2" role="radiogroup" aria-label="Theme preference">
+              {['light', 'dark', 'system'].map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  role="radio"
+                  aria-checked={mounted && theme === t}
+                  onClick={() => setTheme(t)}
+                  className={`flex-1 py-1.5 rounded border text-xs font-semibold capitalize transition-all focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50 ${
+                    mounted && theme === t
+                      ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300'
+                      : 'border-[#30363d] bg-[#0d1117] text-gray-400 hover:bg-[#21262d]'
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Editor Font Size */}
           <div className="border-t border-[#30363d]/60 pt-4">
             <div className="flex items-center justify-between mb-2">
