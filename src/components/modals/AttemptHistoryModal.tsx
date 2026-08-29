@@ -79,7 +79,7 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
       case 'Incomplete':
       default:
         return (
-          <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-semibold bg-gray-500/10 text-gray-400 border border-gray-500/30">
+          <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-semibold bg-gray-500/10 text-secondary border border-gray-500/30">
             <Circle className="w-3.5 h-3.5" /> Incomplete
           </span>
         );
@@ -112,23 +112,23 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
       }}
     >
       <div
-        className="bg-[#161b22] border border-[#30363d] rounded-xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden"
+        className="bg-surface border border-default rounded-xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#30363d] bg-[#0d1117]/60">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-default bg-canvas/60">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
               <Layers className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-sm font-bold text-gray-100">{problem.title}</h2>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#21262d] text-gray-400 border border-[#30363d] font-mono">
+                <h2 className="text-sm font-bold text-primary">{problem.title}</h2>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-surface-elevated text-secondary border border-default font-mono">
                   {problem.topic}
                 </span>
               </div>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-secondary">
                 Attempt History ({attempts.length} {attempts.length === 1 ? 'attempt' : 'attempts'})
               </p>
             </div>
@@ -147,7 +147,7 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
             <button
               onClick={onClose}
               aria-label="Close dialog"
-              className="p-1.5 text-gray-400 hover:text-gray-200 hover:bg-[#21262d] rounded transition-colors"
+              className="p-1.5 text-secondary hover:text-primary hover:bg-surface-elevated rounded transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -158,9 +158,9 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
         <div className="flex-1 flex overflow-hidden">
           {selectedAttempt ? (
             /* Selected Attempt Read-Only Detail View */
-            <div className="flex-1 flex flex-col min-w-0 bg-[#0d1117]">
+            <div className="flex-1 flex flex-col min-w-0 bg-canvas">
               {/* Attempt Detail Sub-Header */}
-              <div className="p-3 border-b border-[#30363d] bg-[#161b22] flex items-center justify-between">
+              <div className="p-3 border-b border-default bg-surface flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setSelectedAttempt(null)}
@@ -168,11 +168,11 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
                   >
                     ← Back to List
                   </button>
-                  <span className="text-xs font-bold text-gray-200">
+                  <span className="text-xs font-bold text-primary">
                     Attempt #{selectedAttempt.attemptNumber}
                   </span>
                   {renderOutcomeBadge(selectedAttempt.outcome)}
-                  <span className="text-[11px] text-gray-400 font-mono flex items-center gap-1">
+                  <span className="text-[11px] text-secondary font-mono flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
                     {new Date(selectedAttempt.createdAt).toLocaleString()}
                   </span>
@@ -184,7 +184,7 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
                       onCompareWithCurrent(selectedAttempt);
                       onClose();
                     }}
-                    className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50 flex items-center gap-1.5"
+                    className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50 flex items-center gap-1.5"
                   >
                     <ArrowRightLeft className="w-3.5 h-3.5" />
                     <span>Compare with Current Code</span>
@@ -193,11 +193,11 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
               </div>
 
               {/* Evidence Metrics Banner */}
-              <div className="p-3 bg-[#161b22]/70 border-b border-[#30363d] grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+              <div className="p-3 bg-surface/70 border-b border-default grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                 {/* Test Cases */}
-                <div className="bg-[#0d1117] p-2.5 rounded border border-[#30363d]">
-                  <span className="text-[10px] text-gray-400 block font-mono">Test Evidence</span>
-                  <span className="font-semibold text-gray-200">
+                <div className="bg-canvas p-2.5 rounded border border-default">
+                  <span className="text-[10px] text-secondary block font-mono">Test Evidence</span>
+                  <span className="font-semibold text-primary">
                     {selectedAttempt.tests
                       ? `${selectedAttempt.tests.passed} / ${selectedAttempt.tests.total} passed`
                       : 'No tests run'}
@@ -205,9 +205,9 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
                 </div>
 
                 {/* Observed Complexity */}
-                <div className="bg-[#0d1117] p-2.5 rounded border border-[#30363d]">
-                  <span className="text-[10px] text-gray-400 block font-mono">Time / Space</span>
-                  <span className="font-semibold text-gray-200">
+                <div className="bg-canvas p-2.5 rounded border border-default">
+                  <span className="text-[10px] text-secondary block font-mono">Time / Space</span>
+                  <span className="font-semibold text-primary">
                     {selectedAttempt.analysis
                       ? `${selectedAttempt.analysis.complexity.time.estimate} | ${selectedAttempt.analysis.complexity.space.estimate}`
                       : 'No static analysis'}
@@ -215,8 +215,8 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
                 </div>
 
                 {/* Benchmark Timing */}
-                <div className="bg-[#0d1117] p-2.5 rounded border border-[#30363d]">
-                  <span className="text-[10px] text-gray-400 block font-mono">Benchmark Avg</span>
+                <div className="bg-canvas p-2.5 rounded border border-default">
+                  <span className="text-[10px] text-secondary block font-mono">Benchmark Avg</span>
                   <span className="font-semibold text-emerald-400">
                     {selectedAttempt.benchmark && selectedAttempt.benchmark.averageMs !== undefined
                       ? `${selectedAttempt.benchmark.averageMs.toFixed(1)} ms`
@@ -225,8 +225,8 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
                 </div>
 
                 {/* Detected Patterns */}
-                <div className="bg-[#0d1117] p-2.5 rounded border border-[#30363d]">
-                  <span className="text-[10px] text-gray-400 block font-mono">DSA Patterns</span>
+                <div className="bg-canvas p-2.5 rounded border border-default">
+                  <span className="text-[10px] text-secondary block font-mono">DSA Patterns</span>
                   <span className="font-medium text-sky-400 truncate block">
                     {selectedAttempt.patterns && selectedAttempt.patterns.length > 0
                       ? selectedAttempt.patterns.join(', ')
@@ -255,22 +255,22 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
                   .map((attempt) => (
                     <div
                       key={attempt.uuid}
-                      className="bg-[#0d1117] border border-[#30363d] hover:border-gray-600 rounded-lg p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 transition-all group"
+                      className="bg-canvas border border-default hover:border-active rounded-lg p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 transition-all group"
                     >
                       {/* Left info */}
                       <div className="space-y-1">
                         <div className="flex items-center gap-2.5">
-                          <span className="text-xs font-bold text-gray-200">
+                          <span className="text-xs font-bold text-primary">
                             Attempt #{attempt.attemptNumber}
                           </span>
                           {renderOutcomeBadge(attempt.outcome)}
-                          <span className="text-[11px] text-gray-400 font-mono">
+                          <span className="text-[11px] text-secondary font-mono">
                             {new Date(attempt.createdAt).toLocaleString()}
                           </span>
                         </div>
 
                         {/* Summary Badges */}
-                        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400 pt-0.5">
+                        <div className="flex flex-wrap items-center gap-3 text-xs text-secondary pt-0.5">
                           {/* Language */}
                           <span className="font-mono text-emerald-400 text-[11px]">
                             {attempt.language.toUpperCase()}
@@ -313,7 +313,7 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
                       <div className="flex items-center gap-2 shrink-0 self-end md:self-auto">
                         <button
                           onClick={() => setSelectedAttempt(attempt)}
-                          className="px-3 py-1 bg-[#21262d] hover:bg-[#30363d] text-gray-200 border border-[#30363d] rounded text-xs font-medium transition-colors flex items-center gap-1"
+                          className="px-3 py-1 bg-surface-elevated hover:bg-surface-hover text-primary border border-default rounded text-xs font-medium transition-colors flex items-center gap-1"
                         >
                           <Code className="w-3.5 h-3.5 text-emerald-400" />
                           <span>View Code</span>
@@ -324,7 +324,7 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
                             onCompareWithCurrent(attempt);
                             onClose();
                           }}
-                          className="p-1.5 text-gray-400 hover:text-emerald-400 hover:bg-[#21262d] rounded transition-colors"
+                          className="p-1.5 text-secondary hover:text-emerald-400 hover:bg-surface-elevated rounded transition-colors"
                           title="Compare attempt code with current code"
                         >
                           <ArrowRightLeft className="w-3.5 h-3.5" />
@@ -332,7 +332,7 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
 
                         <button
                           onClick={() => setAttemptToDelete(attempt)}
-                          className="p-1.5 text-gray-400 hover:text-red-400 hover:bg-red-950/30 rounded transition-colors"
+                          className="p-1.5 text-secondary hover:text-red-400 hover:bg-red-950/30 rounded transition-colors"
                           title="Delete this attempt"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -341,7 +341,7 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
                     </div>
                   ))
               ) : (
-                <div className="p-12 text-center text-gray-500 space-y-2">
+                <div className="p-12 text-center text-muted space-y-2">
                   <p className="text-sm font-medium">No recorded attempts for this problem yet.</p>
                   <p className="text-xs">
                     Work on this problem in the Editor and click "Record Attempt" to capture your solution evidence.
@@ -362,23 +362,23 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
           }}
         >
           <div
-            className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
+            className="bg-surface border border-default rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-sm font-bold text-gray-100">Delete Attempt #{attemptToDelete.attemptNumber}?</h3>
-            <p className="text-xs text-gray-400">
+            <h3 className="text-sm font-bold text-primary">Delete Attempt #{attemptToDelete.attemptNumber}?</h3>
+            <p className="text-xs text-secondary">
               Are you sure you want to delete this historical attempt? This action cannot be undone.
             </p>
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setAttemptToDelete(null)}
-                className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                className="px-3 py-1.5 bg-surface-elevated hover:bg-surface-hover text-secondary rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmDelete}
-                className="px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                className="px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
               >
                 Delete
               </button>
@@ -396,23 +396,23 @@ export const AttemptHistoryModal: React.FC<AttemptHistoryModalProps> = ({
           }}
         >
           <div
-            className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
+            className="bg-surface border border-default rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-sm font-bold text-red-400">Clear All Attempt History?</h3>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-secondary">
               Delete all {attempts.length} attempts for "{problem.title}"? The linked code program will remain intact.
             </p>
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setIsConfirmingClear(false)}
-                className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                className="px-3 py-1.5 bg-surface-elevated hover:bg-surface-hover text-secondary rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmClearAll}
-                className="px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                className="px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
               >
                 Clear All Attempts
               </button>

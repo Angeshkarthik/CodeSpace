@@ -172,8 +172,26 @@ export const WorkspaceContainer: React.FC = () => {
   // Execution & Console State
   const [isRunning, setIsRunning] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  // Responsive layout state
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Auto-collapse sidebar on < 1200px
+  useEffect(() => {
+    if (windowWidth < 1200 && !isSidebarCollapsed) {
+      setIsSidebarCollapsed(true);
+    }
+  }, [windowWidth]);
+
   const [isConsoleOpen, setIsConsoleOpen] = useState(true);
-  const [consoleTab, setConsoleTab] = useState<ConsoleTab>('output');
+  const [consoleTab, setConsoleTab] = useState<ConsoleTab>('run_io');
   const [inputText, setInputText] = useState('');
   const [outputLog, setOutputLog] = useState('');
   const [errorLog, setErrorLog] = useState('');
@@ -194,6 +212,52 @@ export const WorkspaceContainer: React.FC = () => {
   const [isUnsaved, setIsUnsaved] = useState(false);
 
   const saveDebounceTimer = useRef<NodeJS.Timeout | null>(null);
+
+  // Right Execution Panel Resizer state
+  const [rightPanelWidth, setRightPanelWidth] = useState(400);
+  const [isResizing, setIsResizing] = useState(false);
+  const [isConsoleMaximized, setIsConsoleMaximized] = useState(false);
+  
+  const startResizing = useCallback(() => setIsResizing(true), []);
+  
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isResizing) return;
+    
+    const sidebarWidth = isSidebarCollapsed ? 48 : 240;
+    const minEditorWidth = 350; // Ensure editor remains usable
+    const availableWidth = window.innerWidth;
+    
+    // Calculate width from the right edge
+    const newWidth = availableWidth - e.clientX;
+    
+    // Max width guarantees sidebar and editor minimum widths are respected
+    const maxRightPanelWidth = availableWidth - sidebarWidth - minEditorWidth;
+    
+    // Clamp between absolute minimums and dynamic maximums
+    const clampedWidth = Math.max(360, Math.min(newWidth, Math.min(560, maxRightPanelWidth)));
+    
+    setRightPanelWidth(clampedWidth);
+  }, [isResizing, isSidebarCollapsed]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsResizing(false);
+  }, []);
+
+  useEffect(() => {
+    if (isResizing) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    } else {
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing, handleMouseMove, handleMouseUp]);
 
   // Ensure activeUuid points to a valid program when rawPrograms loads or changes
   useEffect(() => {
@@ -670,7 +734,7 @@ export const WorkspaceContainer: React.FC = () => {
       ) {
         setConsoleTab('errors');
       } else {
-        setConsoleTab('output');
+        setConsoleTab('run_io');
       }
     } catch (err: any) {
       if (activeUuidRef.current !== reqProgUuid) return;
@@ -1083,7 +1147,7 @@ export const WorkspaceContainer: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-[#0d1117] text-gray-200 overflow-hidden">
+    <div className="flex flex-col h-screen w-screen bg-canvas text-primary overflow-hidden">
       {/* Top Bar */}
       <TopBar
         currentProgram={activeProgram}
@@ -1129,8 +1193,10 @@ export const WorkspaceContainer: React.FC = () => {
             onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
           />
 
-          {/* Center/Main Area: Toolbar + Editor + Console */}
-          <main className="flex-1 flex flex-col min-w-0 bg-[#0d1117]">
+          {/* Center/Main Area & Responsive Execution Panel Container */}
+          <div className={`flex-1 flex min-w-0 overflow-hidden relative ${windowWidth < 900 ? 'flex-col' : 'flex-row'}`}>
+            {/* Editor Area */}
+            <main className={`flex-col min-w-0 min-h-0 bg-canvas relative ${isConsoleMaximized ? 'hidden' : 'flex flex-1'}`}>
             {/* Action Toolbar */}
             <EditorToolbar
               currentProgram={activeProgram}
@@ -1166,22 +1232,45 @@ export const WorkspaceContainer: React.FC = () => {
                   traceLine={isTraceModalOpen ? traceLine : null}
                 />
               ) : (
-                <div className="flex flex-col items-center justify-center h-full text-gray-500 space-y-3">
+                <div className="flex flex-col items-center justify-center h-full text-muted space-y-3">
                   <p className="text-sm font-medium">No program selected</p>
                   <button
                     onClick={() => setIsNewModalOpen(true)}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold shadow-xs transition-colors"
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-semibold shadow-xs transition-colors"
                   >
                     + Create New Program
                   </button>
                 </div>
               )}
             </div>
+          </main>
 
-            {/* Bottom Console Panel */}
+          {/* Right Execution Panel Resizer (Desktop Only) */}
+          {isConsoleOpen && !isConsoleMaximized && windowWidth >= 900 && (
+            <div
+              className="flex w-2 cursor-col-resize justify-center bg-transparent hover:bg-blue-500/10 transition-colors z-20 shrink-0 group"
+              onMouseDown={startResizing}
+            >
+              <div className={`w-[1px] h-full transition-colors ${isResizing ? 'bg-blue-500' : 'bg-default'} group-hover:bg-blue-500`} />
+            </div>
+          )}
+
+          {/* Execution Panel (Right on >=900, Bottom on <900) */}
+          <div
+            style={isConsoleOpen && !isConsoleMaximized ? { 
+              width: windowWidth >= 900 ? rightPanelWidth : '100%',
+              height: windowWidth >= 900 ? '100%' : (isConsoleOpen ? '50%' : '3rem')
+            } : undefined}
+            className={`flex flex-col bg-canvas shrink-0 transition-all ${
+              !isConsoleOpen ? (windowWidth >= 900 ? 'border-l border-default' : 'border-t border-default') : 
+              isConsoleMaximized ? 'absolute inset-0 z-20' : (windowWidth >= 900 ? 'border-l border-default' : 'border-t border-default')
+            }`}
+          >
             <ConsolePanel
               isOpen={isConsoleOpen}
               onToggleOpen={() => setIsConsoleOpen(!isConsoleOpen)}
+              isMaximized={isConsoleMaximized}
+              onToggleMaximize={() => setIsConsoleMaximized(!isConsoleMaximized)}
               activeTab={consoleTab}
               onTabChange={setConsoleTab}
               inputText={inputText}
@@ -1210,7 +1299,8 @@ export const WorkspaceContainer: React.FC = () => {
               testProgress={testProgress}
               testSummary={testSummary}
             />
-          </main>
+          </div>
+          </div>
         </div>
       )}
 
@@ -1340,15 +1430,15 @@ export const WorkspaceContainer: React.FC = () => {
             role="dialog"
             aria-modal="true"
             aria-labelledby="no-problem-warning-title"
-            className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
+            className="bg-surface border border-default rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 id="no-problem-warning-title" className="text-sm font-bold text-amber-400">No Active Practice Problem</h3>
-            <p className="text-xs text-gray-300">{noProblemWarningMsg}</p>
+            <p className="text-xs text-secondary">{noProblemWarningMsg}</p>
             <div className="flex justify-end">
               <button
                 onClick={() => setNoProblemWarningMsg(null)}
-                className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-semibold focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
               >
                 OK
               </button>
@@ -1369,17 +1459,17 @@ export const WorkspaceContainer: React.FC = () => {
             role="dialog"
             aria-modal="true"
             aria-labelledby="duplicate-attempt-prompt-title"
-            className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
+            className="bg-surface border border-default rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 id="duplicate-attempt-prompt-title" className="text-sm font-bold text-gray-100">Duplicate Code Attempt</h3>
-            <p className="text-xs text-gray-400">
+            <h3 id="duplicate-attempt-prompt-title" className="text-sm font-bold text-primary">Duplicate Code Attempt</h3>
+            <p className="text-xs text-secondary">
               This code matches your previous recorded attempt for "{activePracticeProblem?.title}".
             </p>
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setIsDuplicatePromptOpen(false)}
-                className="px-3.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 border border-[#30363d] rounded text-xs focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                className="px-3.5 py-1.5 bg-surface-elevated hover:bg-surface-hover text-secondary border border-default rounded text-xs focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
               >
                 Cancel
               </button>
@@ -1388,7 +1478,7 @@ export const WorkspaceContainer: React.FC = () => {
                   setIsDuplicatePromptOpen(false);
                   await executeRecordAttempt();
                 }}
-                className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-semibold focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
               >
                 Record Anyway
               </button>
@@ -1409,17 +1499,17 @@ export const WorkspaceContainer: React.FC = () => {
             role="dialog"
             aria-modal="true"
             aria-labelledby="solved-prompt-title"
-            className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
+            className="bg-surface border border-default rounded-xl p-5 max-w-sm w-full space-y-4 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 id="solved-prompt-title" className="text-sm font-bold text-emerald-400">Attempt Solved! 🎉</h3>
-            <p className="text-xs text-gray-300">
+            <p className="text-xs text-secondary">
               All test cases passed for "{solvedPromptProblem.title}". Would you like to mark this practice problem as Solved?
             </p>
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setSolvedPromptProblem(null)}
-                className="px-3.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 border border-[#30363d] rounded text-xs focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                className="px-3.5 py-1.5 bg-surface-elevated hover:bg-surface-hover text-secondary border border-default rounded text-xs focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
               >
                 Keep Current Status
               </button>
@@ -1431,7 +1521,7 @@ export const WorkspaceContainer: React.FC = () => {
                   }
                   setSolvedPromptProblem(null);
                 }}
-                className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-semibold focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
               >
                 Mark as Solved
               </button>
@@ -1442,7 +1532,7 @@ export const WorkspaceContainer: React.FC = () => {
 
       {/* Attempt Toast Notification */}
       {attemptToast && (
-        <div className="fixed bottom-5 right-5 z-50 bg-[#161b22] border border-emerald-500/40 text-emerald-300 px-4 py-2.5 rounded-lg shadow-xl text-xs font-medium flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <div className="fixed bottom-5 right-5 z-50 bg-surface border border-emerald-500/40 text-emerald-300 px-4 py-2.5 rounded-lg shadow-xl text-xs font-medium flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
           <span>{attemptToast.msg}</span>
         </div>
       )}

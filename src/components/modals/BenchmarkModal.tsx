@@ -48,9 +48,9 @@ function StatRow({
   accent?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between py-1.5 px-3 rounded hover:bg-[#21262d] transition-colors">
-      <span className="text-[11px] text-gray-400 font-medium">{label}</span>
-      <span className={`font-mono text-sm font-semibold ${accent ? 'text-emerald-300' : 'text-gray-100'}`}>
+    <div className="flex items-center justify-between py-1.5 px-3 rounded hover:bg-surface-elevated transition-colors">
+      <span className="text-[11px] text-secondary font-medium">{label}</span>
+      <span className={`font-mono text-sm font-semibold ${accent ? 'text-emerald-300' : 'text-primary'}`}>
         {value}
       </span>
     </div>
@@ -83,7 +83,7 @@ function RunTimingChart({ timings }: { timings: number[] }) {
           );
         })}
       </div>
-      <div className="flex justify-between text-[9px] text-gray-600 font-mono mt-0.5 px-0.5">
+      <div className="flex justify-between text-[9px] text-muted font-mono mt-0.5 px-0.5">
         <span>1</span>
         <span>{timings.length}</span>
       </div>
@@ -97,7 +97,7 @@ function StatusBadge({ status }: { status: BenchmarkResult['status'] }) {
     completed: { label: 'Completed', cls: 'bg-emerald-900/40 text-emerald-300 border-emerald-700/40' },
     partial: { label: 'Partial', cls: 'bg-amber-900/40 text-amber-300 border-amber-700/40' },
     failed: { label: 'Failed', cls: 'bg-red-900/40 text-red-300 border-red-700/40' },
-    cancelled: { label: 'Cancelled', cls: 'bg-gray-700/40 text-gray-300 border-gray-600/40' },
+    cancelled: { label: 'Cancelled', cls: 'bg-surface-hover text-secondary border-gray-600/40' },
   };
   const { label, cls } = map[status];
   return (
@@ -159,18 +159,18 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
       />
 
       {/* Panel */}
-      <div className="relative z-10 flex flex-col h-full w-[380px] bg-[#0d1117] border-l border-[#30363d] pointer-events-auto shadow-2xl">
+      <div className="relative z-10 flex flex-col h-full w-[380px] bg-canvas border-l border-default pointer-events-auto shadow-2xl">
 
         {/* ── Header ── */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#30363d] bg-[#161b22] shrink-0">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-default bg-surface shrink-0">
           <div className="flex items-center gap-2">
             <Gauge className="w-4 h-4 text-amber-400" />
-            <span className="text-sm font-semibold text-gray-100">Benchmark</span>
+            <span className="text-sm font-semibold text-primary">Benchmark</span>
           </div>
           <button
             onClick={onClose}
             disabled={isBenchmarking}
-            className="p-1 rounded hover:bg-[#30363d] text-gray-400 hover:text-gray-100 transition-colors disabled:opacity-40"
+            className="p-1 rounded hover:bg-surface-hover text-secondary hover:text-primary transition-colors disabled:opacity-40"
             title="Close"
           >
             <X className="w-4 h-4" />
@@ -178,18 +178,18 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
         </div>
 
         {/* ── Config bar ── */}
-        <div className="shrink-0 px-4 py-3 border-b border-[#30363d] bg-[#0d1117] space-y-3">
+        <div className="shrink-0 px-4 py-3 border-b border-default bg-canvas space-y-3">
           {/* Language */}
-          <div className="flex gap-3 text-[11px] text-gray-400">
+          <div className="flex gap-3 text-[11px] text-secondary">
             <span>
               Language:{' '}
-              <span className="text-gray-200 font-semibold">{LANGUAGE_LABELS[language]}</span>
+              <span className="text-primary font-semibold">{LANGUAGE_LABELS[language]}</span>
             </span>
           </div>
 
           {/* Run count selector */}
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-gray-400 shrink-0">Runs</span>
+            <span className="text-[11px] text-secondary shrink-0">Runs</span>
             <div className="flex gap-1">
               {BENCHMARK_RUN_PRESETS.map((n) => (
                 <button
@@ -199,7 +199,7 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
                   className={`px-2 py-0.5 rounded text-[11px] font-mono font-medium border transition-colors ${
                     selectedRuns === n
                       ? 'bg-amber-600/30 border-amber-500/50 text-amber-300'
-                      : 'bg-[#21262d] border-[#30363d] text-gray-400 hover:text-gray-200'
+                      : 'bg-surface-elevated border-default text-secondary hover:text-primary'
                   } disabled:opacity-40`}
                 >
                   {n}
@@ -210,9 +210,9 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
 
           {/* Input preview */}
           {currentInput.trim() && (
-            <div className="text-[10px] text-gray-500 font-mono">
+            <div className="text-[10px] text-muted font-mono">
               Input:{' '}
-              <span className="text-gray-400">
+              <span className="text-secondary">
                 {currentInput.slice(0, 40)}{currentInput.length > 40 ? '…' : ''}
               </span>
             </div>
@@ -235,16 +235,16 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
           {/* In-progress */}
           {isBenchmarking && benchmarkProgress && (
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs text-gray-300">
+              <div className="flex items-center justify-between text-xs text-secondary">
                 <span className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse inline-block" />
                   Benchmarking...
                 </span>
-                <span className="font-mono text-[11px] text-gray-400">
+                <span className="font-mono text-[11px] text-secondary">
                   Run {benchmarkProgress.completed} / {benchmarkProgress.total}
                 </span>
               </div>
-              <div className="h-1.5 bg-[#21262d] rounded-full overflow-hidden">
+              <div className="h-1.5 bg-surface-elevated rounded-full overflow-hidden">
                 <div
                   className="h-full bg-amber-500 rounded-full transition-all duration-300"
                   style={{
@@ -285,10 +285,10 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
           {result && !isBenchmarking && (
             <>
               {/* Status + run count */}
-              <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-3 space-y-2">
+              <div className="bg-surface border border-default rounded-lg p-3 space-y-2">
                 <div className="flex items-center justify-between">
                   <StatusBadge status={result.status} />
-                  <span className="text-[11px] font-mono text-gray-400">
+                  <span className="text-[11px] font-mono text-secondary">
                     {result.successfulRuns} / {result.runsCompleted} successful
                   </span>
                 </div>
@@ -303,8 +303,8 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
 
               {/* Statistics */}
               {hasStats && (
-                <div className="bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden">
-                  <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wide px-3 pt-2 pb-1">
+                <div className="bg-surface border border-default rounded-lg overflow-hidden">
+                  <p className="text-[10px] text-muted font-mono uppercase tracking-wide px-3 pt-2 pb-1">
                     {result.isRoundTripFallback ? 'Round-trip Statistics' : 'Runtime Statistics'}
                   </p>
                   <StatRow label="Fastest" value={`${fmtMs(result.fastestMs!)} ms`} accent />
@@ -316,8 +316,8 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
                   {result.timingsMs.length >= 2 && (
                     <div className="px-3 pb-3">
                       <div className="flex items-center gap-1 mb-1 mt-2">
-                        <BarChart2 className="w-3 h-3 text-gray-500" />
-                        <span className="text-[10px] text-gray-500 font-mono uppercase tracking-wide">Run times</span>
+                        <BarChart2 className="w-3 h-3 text-muted" />
+                        <span className="text-[10px] text-muted font-mono uppercase tracking-wide">Run times</span>
                       </div>
                       <RunTimingChart timings={result.timingsMs} />
                     </div>
@@ -327,18 +327,18 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
 
               {/* Per-run table */}
               {result.timingsMs.length > 0 && (
-                <div className="bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden">
-                  <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wide px-3 pt-2 pb-1">
+                <div className="bg-surface border border-default rounded-lg overflow-hidden">
+                  <p className="text-[10px] text-muted font-mono uppercase tracking-wide px-3 pt-2 pb-1">
                     Individual Runs
                   </p>
-                  <div className="divide-y divide-[#21262d]">
+                  <div className="divide-y divide-subtle">
                     {displayRuns.map((t, i) => (
                       <div
                         key={i}
                         className="flex items-center justify-between px-3 py-1.5 text-[11px] font-mono"
                       >
-                        <span className="text-gray-500">{i + 1}</span>
-                        <span className={t === result.fastestMs ? 'text-emerald-300 font-semibold' : t === result.slowestMs ? 'text-red-300' : 'text-gray-300'}>
+                        <span className="text-muted">{i + 1}</span>
+                        <span className={t === result.fastestMs ? 'text-emerald-300 font-semibold' : t === result.slowestMs ? 'text-red-300' : 'text-secondary'}>
                           {fmtMs(t)} ms
                         </span>
                       </div>
@@ -347,7 +347,7 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
                   {previewRuns.length > 15 && (
                     <button
                       onClick={() => setShowAllRuns((p) => !p)}
-                      className="w-full text-center py-1.5 text-[10px] text-gray-500 hover:text-gray-300 transition-colors border-t border-[#21262d]"
+                      className="w-full text-center py-1.5 text-[10px] text-muted hover:text-secondary transition-colors border-t border-subtle"
                     >
                       {showAllRuns ? 'Show less' : `Show all ${previewRuns.length} runs`}
                     </button>
@@ -364,7 +364,7 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
               )}
 
               {/* Environment disclaimer */}
-              <p className="text-[10px] text-gray-600 leading-relaxed">
+              <p className="text-[10px] text-muted leading-relaxed">
                 Benchmark results depend on your hardware, runtime, compiler, system load, and execution environment. Results from different environments are not directly comparable.
               </p>
             </>
@@ -372,7 +372,7 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
 
           {/* Empty state */}
           {!result && !isBenchmarking && !error && (
-            <div className="flex flex-col items-center justify-center py-10 text-gray-500 gap-2">
+            <div className="flex flex-col items-center justify-center py-10 text-muted gap-2">
               <Gauge className="w-8 h-8 opacity-30" />
               <p className="text-xs text-center">
                 Select a run count and press <span className="text-amber-400 font-semibold">Run Benchmark</span> to measure execution speed.
@@ -382,7 +382,7 @@ export const BenchmarkModal: React.FC<BenchmarkModalProps> = ({
         </div>
 
         {/* ── Footer actions ── */}
-        <div className="shrink-0 border-t border-[#30363d] bg-[#0d1117] p-3 flex gap-2">
+        <div className="shrink-0 border-t border-default bg-canvas p-3 flex gap-2">
           {isBenchmarking ? (
             <button
               onClick={onCancelBenchmark}

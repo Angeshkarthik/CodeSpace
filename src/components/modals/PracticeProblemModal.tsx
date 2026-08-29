@@ -108,20 +108,20 @@ export const PracticeProblemModal: React.FC<PracticeProblemModalProps> = ({
       }}
     >
       <div
-        className="bg-[#161b22] border border-[#30363d] rounded-xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col"
+        className="bg-surface border border-default rounded-xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#30363d] bg-[#0d1117]/50">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-default bg-canvas/50">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
               <Code className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-gray-100">
+              <h2 className="text-base font-semibold text-primary">
                 {problemToEdit ? 'Edit Practice Problem' : 'Create Practice Problem'}
               </h2>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-secondary">
                 {problemToEdit ? 'Update problem metadata and linked program' : 'Add a new DSA or placement practice problem'}
               </p>
             </div>
@@ -129,7 +129,7 @@ export const PracticeProblemModal: React.FC<PracticeProblemModalProps> = ({
           <button
             onClick={onClose}
             aria-label="Close dialog"
-            className="p-1.5 text-gray-400 hover:text-gray-200 hover:bg-[#21262d] rounded transition-colors"
+            className="p-1.5 text-secondary hover:text-primary hover:bg-surface-elevated rounded transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -145,7 +145,7 @@ export const PracticeProblemModal: React.FC<PracticeProblemModalProps> = ({
 
           {/* Title */}
           <div>
-            <label htmlFor="problem-title" className="block font-medium text-gray-300 mb-1 flex items-center gap-1.5">
+            <label htmlFor="problem-title" className="block font-medium text-secondary mb-1 flex items-center gap-1.5">
               <FileText className="w-3.5 h-3.5 text-emerald-400" /> Title <span className="text-red-400">*</span>
             </label>
             <input
@@ -155,14 +155,14 @@ export const PracticeProblemModal: React.FC<PracticeProblemModalProps> = ({
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Two Sum, Reverse Linked List"
               required
-              className="w-full bg-[#0d1117] border border-[#30363d] rounded px-3 py-2 text-gray-200 focus:outline-none focus:border-emerald-500 text-xs"
+              className="w-full bg-canvas border border-default rounded px-3 py-2 text-primary focus:outline-none focus:border-blue-500 text-xs"
             />
           </div>
 
           {/* Topic & Difficulty */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label htmlFor="problem-topic" className="block font-medium text-gray-300 mb-1 flex items-center gap-1.5">
+              <label htmlFor="problem-topic" className="block font-medium text-secondary mb-1 flex items-center gap-1.5">
                 <Tag className="w-3.5 h-3.5 text-sky-400" /> Topic / Category <span className="text-red-400">*</span>
               </label>
               <input
@@ -172,19 +172,19 @@ export const PracticeProblemModal: React.FC<PracticeProblemModalProps> = ({
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder="e.g. Arrays, Trees, DP"
                 required
-                className="w-full bg-[#0d1117] border border-[#30363d] rounded px-3 py-2 text-gray-200 focus:outline-none focus:border-emerald-500 text-xs"
+                className="w-full bg-canvas border border-default rounded px-3 py-2 text-primary focus:outline-none focus:border-blue-500 text-xs"
               />
             </div>
 
             <div>
-              <label htmlFor="problem-difficulty" className="block font-medium text-gray-300 mb-1 flex items-center gap-1.5">
+              <label htmlFor="problem-difficulty" className="block font-medium text-secondary mb-1 flex items-center gap-1.5">
                 <BarChart2 className="w-3.5 h-3.5 text-amber-400" /> Difficulty <span className="text-red-400">*</span>
               </label>
               <select
                 id="problem-difficulty"
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value as PracticeDifficulty)}
-                className="w-full bg-[#0d1117] border border-[#30363d] rounded px-3 py-2 text-gray-200 focus:outline-none focus:border-emerald-500 text-xs cursor-pointer"
+                className="w-full bg-canvas border border-default rounded px-3 py-2 text-primary focus:outline-none focus:border-blue-500 text-xs cursor-pointer"
               >
                 <option value="Easy">Easy</option>
                 <option value="Medium">Medium</option>
@@ -196,14 +196,14 @@ export const PracticeProblemModal: React.FC<PracticeProblemModalProps> = ({
           {/* Status & Linked Program */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label htmlFor="problem-status" className="block font-medium text-gray-300 mb-1">
+              <label htmlFor="problem-status" className="block font-medium text-secondary mb-1">
                 Practice Status
               </label>
               <select
                 id="problem-status"
                 value={status}
                 onChange={(e) => setStatus(e.target.value as PracticeStatus)}
-                className="w-full bg-[#0d1117] border border-[#30363d] rounded px-3 py-2 text-gray-200 focus:outline-none focus:border-emerald-500 text-xs cursor-pointer"
+                className="w-full bg-canvas border border-default rounded px-3 py-2 text-primary focus:outline-none focus:border-blue-500 text-xs cursor-pointer"
               >
                 <option value="Not Started">Not Started</option>
                 <option value="In Progress">In Progress</option>
@@ -212,14 +212,14 @@ export const PracticeProblemModal: React.FC<PracticeProblemModalProps> = ({
             </div>
 
             <div>
-              <label htmlFor="problem-program" className="block font-medium text-gray-300 mb-1">
+              <label htmlFor="problem-program" className="block font-medium text-secondary mb-1">
                 Linked Program (Optional)
               </label>
               <select
                 id="problem-program"
                 value={programUuid}
                 onChange={(e) => setProgramUuid(e.target.value)}
-                className="w-full bg-[#0d1117] border border-[#30363d] rounded px-3 py-2 text-gray-200 focus:outline-none focus:border-emerald-500 text-xs cursor-pointer font-mono"
+                className="w-full bg-canvas border border-default rounded px-3 py-2 text-primary focus:outline-none focus:border-blue-500 text-xs cursor-pointer font-mono"
               >
                 <option value="">-- No Linked Program --</option>
                 {programs.map((p) => (
@@ -233,7 +233,7 @@ export const PracticeProblemModal: React.FC<PracticeProblemModalProps> = ({
 
           {/* Description */}
           <div>
-            <label htmlFor="problem-desc" className="block font-medium text-gray-300 mb-1">
+            <label htmlFor="problem-desc" className="block font-medium text-secondary mb-1">
               Description / Notes (Optional)
             </label>
             <textarea
@@ -242,23 +242,23 @@ export const PracticeProblemModal: React.FC<PracticeProblemModalProps> = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Add problem statement, constraints, or key DSA takeaways..."
-              className="w-full bg-[#0d1117] border border-[#30363d] rounded px-3 py-2 text-gray-200 focus:outline-none focus:border-emerald-500 text-xs font-mono"
+              className="w-full bg-canvas border border-default rounded px-3 py-2 text-primary focus:outline-none focus:border-blue-500 text-xs font-mono"
             />
           </div>
 
           {/* Modal Actions */}
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#30363d]">
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-default">
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+              className="px-3 py-1.5 bg-surface-elevated hover:bg-surface-hover text-secondary rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-1.5 px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+              className="flex items-center gap-1.5 px-4 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
             >
               <Check className="w-3.5 h-3.5" />
               <span>{problemToEdit ? 'Save Changes' : 'Create Problem'}</span>

@@ -64,16 +64,16 @@ const MoreMenuItem: React.FC<MoreMenuItemProps> = ({
   <button
     onClick={onClick}
     disabled={disabled || isLoading}
-    className="w-full flex items-start gap-3 px-3 py-2 rounded-md text-left transition-colors hover:bg-[#21262d] disabled:opacity-40 disabled:cursor-not-allowed group"
+    className="w-full flex items-start gap-3 px-3 py-2 rounded-md text-left transition-colors hover:bg-surface-elevated disabled:opacity-40 disabled:cursor-not-allowed group"
   >
     <span className="mt-0.5 shrink-0 w-4 h-4 flex items-center justify-center">
-      {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin text-gray-400" /> : icon}
+      {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin text-secondary" /> : icon}
     </span>
     <div>
-      <div className="text-xs font-medium text-gray-200 group-hover:text-white leading-none mb-0.5">
+      <div className="text-xs font-medium text-primary group-hover:text-white leading-none mb-0.5">
         {label}
       </div>
-      <div className="text-[11px] text-gray-500 leading-tight">{description}</div>
+      <div className="text-[11px] text-muted leading-tight">{description}</div>
     </div>
   </button>
 );
@@ -81,11 +81,11 @@ const MoreMenuItem: React.FC<MoreMenuItemProps> = ({
 // ─── Section Label ───────────────────────────────────────────────────────────
 const SectionLabel: React.FC<{ label: string }> = ({ label }) => (
   <div className="px-3 pt-2 pb-1">
-    <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">{label}</span>
+    <span className="text-[10px] font-semibold text-muted uppercase tracking-wider">{label}</span>
   </div>
 );
 
-const Divider = () => <div className="border-t border-[#30363d] my-1" />;
+const Divider = () => <div className="border-t border-default my-1" />;
 
 // ─── EditorToolbar ───────────────────────────────────────────────────────────
 export const EditorToolbar: React.FC<EditorToolbarProps> = ({
@@ -149,7 +149,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   }, []);
 
   return (
-    <div className="h-10 bg-[#161b22] border-b border-[#30363d] px-3 flex items-center justify-between select-none z-10 relative">
+    <div className="h-10 bg-surface border-b border-default px-3 flex items-center justify-between select-none z-10 relative">
       {/* ── Left: Primary Actions ── */}
       <div className="flex items-center gap-1.5 min-w-0">
 
@@ -159,7 +159,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           disabled={disabled || isRunning}
           aria-label="Run Program"
           title="Run Program (Ctrl + S then Run)"
-          className="flex items-center gap-1.5 px-3.5 py-1 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 disabled:opacity-50 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+          className="flex items-center gap-1.5 px-3.5 py-1 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
         >
           {isRunning ? (
             <>
@@ -174,7 +174,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           )}
         </button>
 
-        <div className="h-4 w-px bg-[#30363d] mx-0.5" />
+        <div className="h-4 w-px bg-surface-hover mx-0.5" />
 
         {/* 🧪 Test — always visible secondary */}
         <button
@@ -182,7 +182,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           disabled={disabled}
           aria-label="Open Test Panel"
           title="Test Cases"
-          className="flex items-center gap-1.5 px-2.5 py-1 text-gray-300 hover:text-gray-100 hover:bg-[#21262d] disabled:opacity-40 rounded text-xs font-medium cursor-pointer transition-colors disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+          className="flex items-center gap-1.5 px-2.5 py-1 bg-surface border border-subtle shadow-sm hover:bg-surface-hover hover:border-default text-secondary hover:text-primary disabled:opacity-40 rounded text-xs font-medium cursor-pointer transition-all disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
         >
           <FlaskConical className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />
           <span>Test</span>
@@ -194,7 +194,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           disabled={disabled}
           aria-label="Open Code Review"
           title="Code Review — static analysis & AI insights"
-          className="flex items-center gap-1.5 px-2.5 py-1 text-gray-300 hover:text-gray-100 hover:bg-[#21262d] disabled:opacity-40 rounded text-xs font-medium cursor-pointer transition-colors disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+          className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-surface border border-subtle shadow-sm hover:bg-surface-hover hover:border-default text-secondary hover:text-primary disabled:opacity-40 rounded text-xs font-medium cursor-pointer transition-all disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
         >
           <Search className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
           <span>Review</span>
@@ -206,7 +206,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           disabled={disabled || isExplaining}
           aria-label="Explain Code"
           title="Explain Code — AI analysis & explanation"
-          className="flex items-center gap-1.5 px-2.5 py-1 text-gray-300 hover:text-gray-100 hover:bg-[#21262d] disabled:opacity-40 rounded text-xs font-medium cursor-pointer transition-colors disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+          className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-surface border border-subtle shadow-sm hover:bg-surface-hover hover:border-default text-secondary hover:text-primary disabled:opacity-40 rounded text-xs font-medium cursor-pointer transition-all disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
         >
           {isExplaining ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin text-violet-400" aria-hidden="true" />
@@ -216,7 +216,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           <span>Explain</span>
         </button>
 
-        <div className="h-4 w-px bg-[#30363d] mx-0.5" />
+        <div className="h-4 w-px bg-surface-hover mx-0.5" />
 
         {/* ⋯ More — dropdown for secondary tools */}
         <div className="relative">
@@ -228,10 +228,10 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
             aria-expanded={isMoreOpen}
             aria-haspopup="true"
             title="More Tools"
-            className={`flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50 ${
+            className={`flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50 ${
               isMoreOpen
-                ? 'bg-[#21262d] text-gray-100 border border-[#30363d]'
-                : 'text-gray-400 hover:text-gray-200 hover:bg-[#21262d]'
+                ? 'bg-surface-hover text-primary border border-default'
+                : 'bg-surface border border-subtle hover:border-default text-secondary hover:text-primary hover:bg-surface-hover'
             }`}
           >
             <MoreHorizontal className="w-3.5 h-3.5" aria-hidden="true" />
@@ -244,8 +244,29 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
               ref={moreRef}
               role="menu"
               aria-label="More Tools Menu"
-              className="absolute top-[calc(100%+6px)] left-0 z-50 w-60 bg-[#161b22] border border-[#30363d] rounded-lg shadow-2xl py-1.5 overflow-hidden"
+              className="absolute top-[calc(100%+6px)] left-0 z-50 w-60 bg-surface border border-default rounded-lg shadow-2xl py-1.5 overflow-hidden"
             >
+              {/* ─ AI Tools (Mobile Only) ─ */}
+              <div className="sm:hidden block">
+                <SectionLabel label="AI Tools" />
+                <MoreMenuItem
+                  icon={<Search className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />}
+                  label="Review"
+                  description="Code review & static analysis"
+                  onClick={() => closeAndCall(onOpenReviewModal)}
+                  disabled={disabled}
+                />
+                <MoreMenuItem
+                  icon={<Brain className="w-3.5 h-3.5 text-violet-400" aria-hidden="true" />}
+                  label="Explain"
+                  description="AI code explanation"
+                  onClick={() => closeAndCall(onOpenExplainModal)}
+                  disabled={disabled || isExplaining}
+                  isLoading={isExplaining}
+                />
+                <Divider />
+              </div>
+
               {/* ─ Execution ─ */}
               <SectionLabel label="Execution" />
               <MoreMenuItem
@@ -317,7 +338,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           disabled={disabled}
           aria-label="Manual Save (Ctrl+S)"
           title="Manual Save (Ctrl + S)"
-          className="flex items-center gap-1.5 text-gray-500 hover:text-gray-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50 rounded px-1"
+          className="flex items-center gap-1.5 text-muted hover:text-secondary transition-colors disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50 rounded px-1"
         >
           {isSaving ? (
             <span className="text-amber-400 animate-pulse font-mono text-[11px]">Saving…</span>
@@ -331,7 +352,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
             </span>
           )}
         </button>
-        <span className="hidden md:inline font-mono text-[10px] text-gray-600 bg-[#0d1117] px-1.5 py-0.5 rounded border border-[#30363d]">
+        <span className="hidden md:inline font-mono text-[10px] text-muted bg-canvas px-1.5 py-0.5 rounded border border-default">
           Ctrl+S
         </span>
       </div>

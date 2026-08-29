@@ -124,20 +124,20 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
       }}
     >
       <div
-        className="flex flex-col w-full max-w-5xl h-[88vh] bg-[#0d1117] border border-[#30363d] rounded-xl shadow-2xl overflow-hidden pointer-events-auto"
+        className="flex flex-col w-full max-w-5xl h-[88vh] bg-canvas border border-default rounded-xl shadow-2xl overflow-hidden pointer-events-auto"
         onClick={(e) => e.stopPropagation()}
       >
 
         {/* ── Modal Header ── */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-[#30363d] bg-[#161b22] shrink-0">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-default bg-surface shrink-0">
           <div className="flex items-center gap-2.5">
             <History className="w-5 h-5 text-emerald-400" />
             <div>
-              <h2 className="text-sm font-semibold text-gray-100 flex items-center gap-2">
+              <h2 className="text-sm font-semibold text-primary flex items-center gap-2">
                 Program History
-                <span className="text-gray-400 font-mono font-normal">({programName})</span>
+                <span className="text-secondary font-mono font-normal">({programName})</span>
               </h2>
-              <p className="text-[11px] text-gray-400">
+              <p className="text-[11px] text-secondary">
                 {versions.length} saved version{versions.length !== 1 ? 's' : ''} • Intentional program checkpoints
               </p>
             </div>
@@ -146,7 +146,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
           <div className="flex items-center gap-2.5">
             <button
               onClick={onOpenSaveVersionModal}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer"
             >
               <Save className="w-3.5 h-3.5" />
               <span>Save Version</span>
@@ -154,7 +154,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
             {versions.length > 0 && (
               <button
                 onClick={() => setConfirmClearAll(true)}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#21262d] hover:bg-red-900/30 hover:text-red-300 text-gray-400 border border-[#30363d] rounded text-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-surface-elevated hover:bg-red-900/30 hover:text-red-300 text-secondary border border-default rounded text-xs transition-colors cursor-pointer"
                 title="Clear all saved history for this program"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -163,7 +163,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
             )}
             <button
               onClick={onClose}
-              className="p-1.5 rounded hover:bg-[#30363d] text-gray-400 hover:text-gray-100 transition-colors"
+              className="p-1.5 rounded hover:bg-surface-hover text-secondary hover:text-primary transition-colors"
               title="Close (Esc)"
             >
               <X className="w-4 h-4" />
@@ -172,9 +172,9 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
         </div>
 
         {/* ── Status Bar ── */}
-        <div className="flex items-center justify-between px-5 py-2 bg-[#0d1117] border-b border-[#21262d] text-xs font-mono shrink-0">
+        <div className="flex items-center justify-between px-5 py-2 bg-canvas border-b border-subtle text-xs font-mono shrink-0">
           <div className="flex items-center gap-2">
-            <span className="text-gray-400">Current Editor Status:</span>
+            <span className="text-secondary">Current Editor Status:</span>
             {isCurrentModified ? (
               <span className="px-2 py-0.5 rounded bg-amber-900/30 text-amber-300 border border-amber-700/30 text-[11px]">
                 Modified since v{latestSavedVersion.versionNumber}
@@ -184,34 +184,34 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
                 Saved as v{latestSavedVersion.versionNumber}
               </span>
             ) : (
-              <span className="text-gray-500 text-[11px]">No saved versions</span>
+              <span className="text-muted text-[11px]">No saved versions</span>
             )}
           </div>
 
           {latestSavedVersion && (
-            <span className="text-gray-500 text-[11px]">
+            <span className="text-muted text-[11px]">
               Latest Checkpoint: v{latestSavedVersion.versionNumber} ({new Date(latestSavedVersion.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})
             </span>
           )}
         </div>
 
         {/* ── Modal Body Split ── */}
-        <div className="flex-1 flex min-h-0 divide-x divide-[#30363d] overflow-hidden">
+        <div className="flex-1 flex min-h-0 divide-x divide-default overflow-hidden">
 
           {/* Left Column: Version History Timeline */}
-          <div className="w-full md:w-1/2 flex flex-col min-h-0 bg-[#0d1117]">
+          <div className="w-full md:w-1/2 flex flex-col min-h-0 bg-canvas">
             {versions.length === 0 ? (
               <div className="flex flex-col items-center justify-center flex-1 p-8 text-center space-y-3">
-                <History className="w-10 h-10 text-gray-600" />
+                <History className="w-10 h-10 text-muted" />
                 <div className="space-y-1">
-                  <h3 className="text-sm font-semibold text-gray-300">No Saved Versions</h3>
-                  <p className="text-xs text-gray-500 max-w-xs">
+                  <h3 className="text-sm font-semibold text-secondary">No Saved Versions</h3>
+                  <p className="text-xs text-muted max-w-xs">
                     Click "Save Version" above to create a persistent checkpoint of your code, complexity analysis, and benchmark evidence.
                   </p>
                 </div>
                 <button
                   onClick={onOpenSaveVersionModal}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-medium shadow-sm transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-medium shadow-sm transition-colors cursor-pointer"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>Save First Version</span>
@@ -227,8 +227,8 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
                       onClick={() => setSelectedVersion(v)}
                       className={`p-3.5 rounded-lg border transition-all cursor-pointer space-y-2.5 ${
                         isSelected
-                          ? 'bg-[#161b22] border-emerald-500/60 shadow-md ring-1 ring-emerald-500/30'
-                          : 'bg-[#161b22]/70 hover:bg-[#161b22] border-[#30363d]'
+                          ? 'bg-surface border-emerald-500/60 shadow-md ring-1 ring-emerald-500/30'
+                          : 'bg-surface/70 hover:bg-surface border-default'
                       }`}
                     >
                       {/* Item Top Row */}
@@ -248,7 +248,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
                                 type="text"
                                 value={editLabel}
                                 onChange={(e) => setEditLabel(e.target.value)}
-                                className="px-2 py-0.5 bg-[#0d1117] border border-emerald-500 rounded text-xs text-gray-200 font-mono focus:outline-hidden"
+                                className="px-2 py-0.5 bg-canvas border border-emerald-500 rounded text-xs text-primary font-mono focus:outline-hidden"
                                 autoFocus
                               />
                               <button
@@ -260,12 +260,12 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
                             </form>
                           ) : (
                             <div className="flex items-center gap-1.5 truncate">
-                              <span className="text-xs font-semibold text-gray-200 truncate">
+                              <span className="text-xs font-semibold text-primary truncate">
                                 {v.label}
                               </span>
                               <button
                                 onClick={(e) => handleStartRename(v, e)}
-                                className="p-0.5 text-gray-500 hover:text-gray-300 transition-colors"
+                                className="p-0.5 text-muted hover:text-secondary transition-colors"
                                 title="Rename label"
                               >
                                 <Pencil className="w-3 h-3" />
@@ -274,7 +274,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
                           )}
                         </div>
 
-                        <span className="text-[11px] font-mono text-gray-500 shrink-0">
+                        <span className="text-[11px] font-mono text-muted shrink-0">
                           {new Date(v.createdAt).toLocaleDateString([], {
                             month: 'short',
                             day: 'numeric',
@@ -289,7 +289,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
 
                       {/* Item Evidence Badges */}
                       <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-mono">
-                        <span className="px-1.5 py-0.5 rounded bg-[#21262d] text-gray-400 border border-[#30363d] uppercase">
+                        <span className="px-1.5 py-0.5 rounded bg-surface-elevated text-secondary border border-default uppercase">
                           {v.language}
                         </span>
 
@@ -320,12 +320,12 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
 
                       {/* Item Action Buttons */}
                       <div
-                        className="flex items-center justify-end gap-1.5 pt-1 border-t border-[#21262d]"
+                        className="flex items-center justify-end gap-1.5 pt-1 border-t border-subtle"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <button
                           onClick={() => setSelectedVersion(v)}
-                          className="flex items-center gap-1 px-2 py-1 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-[11px] transition-colors"
+                          className="flex items-center gap-1 px-2 py-1 bg-surface-elevated hover:bg-surface-hover text-secondary rounded text-[11px] transition-colors"
                           title="View source code & detailed evidence"
                         >
                           <Eye className="w-3 h-3 text-sky-400" />
@@ -334,7 +334,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
 
                         <button
                           onClick={() => onCompareVersion(v)}
-                          className="flex items-center gap-1 px-2 py-1 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-[11px] transition-colors"
+                          className="flex items-center gap-1 px-2 py-1 bg-surface-elevated hover:bg-surface-hover text-secondary rounded text-[11px] transition-colors"
                           title="Compare this version using Compare Code"
                         >
                           <ArrowLeftRight className="w-3 h-3 text-emerald-400" />
@@ -343,7 +343,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
 
                         <button
                           onClick={() => setConfirmRestoreVersion(v)}
-                          className="flex items-center gap-1 px-2 py-1 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-[11px] transition-colors"
+                          className="flex items-center gap-1 px-2 py-1 bg-surface-elevated hover:bg-surface-hover text-secondary rounded text-[11px] transition-colors"
                           title="Restore code into current editor"
                         >
                           <RotateCcw className="w-3 h-3 text-purple-400" />
@@ -352,7 +352,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
 
                         <button
                           onClick={() => setConfirmDeleteUuid(v.uuid)}
-                          className="p-1 bg-[#21262d] hover:bg-red-900/30 text-gray-400 hover:text-red-300 rounded transition-colors"
+                          className="p-1 bg-surface-elevated hover:bg-red-900/30 text-secondary hover:text-red-300 rounded transition-colors"
                           title="Delete version"
                         >
                           <Trash2 className="w-3 h-3" />
@@ -366,17 +366,17 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
           </div>
 
           {/* Right Column: Code Preview & Metadata Detail */}
-          <div className="hidden md:flex md:w-1/2 flex-col min-h-0 bg-[#0d1117]">
+          <div className="hidden md:flex md:w-1/2 flex-col min-h-0 bg-canvas">
             {selectedVersion ? (
               <div className="flex-1 flex flex-col min-h-0">
 
                 {/* Detail Header */}
-                <div className="px-4 py-2.5 bg-[#161b22] border-b border-[#30363d] flex items-center justify-between font-mono text-xs">
+                <div className="px-4 py-2.5 bg-surface border-b border-default flex items-center justify-between font-mono text-xs">
                   <div className="flex items-center gap-2">
                     <span className="px-2 py-0.5 rounded bg-emerald-900/50 text-emerald-300 border border-emerald-700/50 font-bold">
                       v{selectedVersion.versionNumber}
                     </span>
-                    <span className="text-gray-200 font-semibold truncate max-w-[200px]">
+                    <span className="text-primary font-semibold truncate max-w-[200px]">
                       {selectedVersion.label}
                     </span>
                   </div>
@@ -411,23 +411,23 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
                 </div>
 
                 {/* Detail Metadata Drawer */}
-                <div className="p-3 bg-[#161b22] border-t border-[#30363d] space-y-2 text-xs font-mono max-h-[160px] overflow-y-auto">
+                <div className="p-3 bg-surface border-t border-default space-y-2 text-xs font-mono max-h-[160px] overflow-y-auto">
                   <div className="grid grid-cols-2 gap-2 text-[11px]">
                     <div>
-                      <span className="text-gray-500">Created:</span>{' '}
-                      <span className="text-gray-300">
+                      <span className="text-muted">Created:</span>{' '}
+                      <span className="text-secondary">
                         {new Date(selectedVersion.createdAt).toLocaleString()}
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-500">Language:</span>{' '}
-                      <span className="text-gray-300 uppercase">{selectedVersion.language}</span>
+                      <span className="text-muted">Language:</span>{' '}
+                      <span className="text-secondary uppercase">{selectedVersion.language}</span>
                     </div>
                   </div>
 
                   {selectedVersion.analysis && (
-                    <div className="text-[11px] bg-[#0d1117] p-2 rounded border border-[#21262d] space-y-0.5">
-                      <div className="text-gray-400 font-semibold">Static Complexity:</div>
+                    <div className="text-[11px] bg-canvas p-2 rounded border border-subtle space-y-0.5">
+                      <div className="text-secondary font-semibold">Static Complexity:</div>
                       <div className="text-sky-300">
                         Time: {selectedVersion.analysis.complexity.time.estimate} ({selectedVersion.analysis.complexity.time.confidence}) • Space: {selectedVersion.analysis.complexity.space.estimate}
                       </div>
@@ -435,8 +435,8 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
                   )}
 
                   {selectedVersion.benchmark && selectedVersion.benchmark.averageMs !== undefined && (
-                    <div className="text-[11px] bg-[#0d1117] p-2 rounded border border-[#21262d] space-y-0.5">
-                      <div className="text-gray-400 font-semibold">Benchmark Evidence:</div>
+                    <div className="text-[11px] bg-canvas p-2 rounded border border-subtle space-y-0.5">
+                      <div className="text-secondary font-semibold">Benchmark Evidence:</div>
                       <div className="text-amber-300">
                         Average: {fmtMs(selectedVersion.benchmark.averageMs)} ms • Median: {fmtMs(selectedVersion.benchmark.medianMs ?? 0)} ms ({selectedVersion.benchmark.successfulRuns} runs)
                       </div>
@@ -446,8 +446,8 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
 
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center flex-1 p-6 text-center text-gray-500 font-mono text-xs space-y-2">
-                <FileCode2 className="w-8 h-8 text-gray-600" />
+              <div className="flex flex-col items-center justify-center flex-1 p-6 text-center text-muted font-mono text-xs space-y-2">
+                <FileCode2 className="w-8 h-8 text-muted" />
                 <p>Select a version from the timeline on the left to preview source code and preserved evidence details.</p>
               </div>
             )}
@@ -466,20 +466,20 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
             }}
           >
             <div
-              className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 max-w-sm w-full space-y-3 shadow-xl"
+              className="bg-surface border border-default rounded-lg p-5 max-w-sm w-full space-y-3 shadow-xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-2 text-purple-400 font-semibold text-sm">
                 <RotateCcw className="w-5 h-5" />
                 <h3>Restore Version {confirmRestoreVersion.versionNumber}?</h3>
               </div>
-              <p className="text-xs text-gray-300 leading-relaxed">
+              <p className="text-xs text-secondary leading-relaxed">
                 This will replace your current editor code with <strong className="text-white">{confirmRestoreVersion.label}</strong>. Your current unsaved editor changes will be overwritten.
               </p>
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   onClick={() => setConfirmRestoreVersion(null)}
-                  className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                  className="px-3 py-1.5 bg-surface-elevated hover:bg-surface-hover text-secondary rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
                 >
                   Cancel
                 </button>
@@ -489,7 +489,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
                     setConfirmRestoreVersion(null);
                     onClose();
                   }}
-                  className="px-4 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                  className="px-4 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
                 >
                   Restore Version
                 </button>
@@ -507,20 +507,20 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
             }}
           >
             <div
-              className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 max-w-sm w-full space-y-3 shadow-xl"
+              className="bg-surface border border-default rounded-lg p-5 max-w-sm w-full space-y-3 shadow-xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-2 text-red-400 font-semibold text-sm">
                 <Trash2 className="w-5 h-5" />
                 <h3>Delete Historical Version?</h3>
               </div>
-              <p className="text-xs text-gray-300 leading-relaxed">
+              <p className="text-xs text-secondary leading-relaxed">
                 Are you sure you want to delete this checkpoint? This action cannot be undone. Remaining versions will keep their current version numbering.
               </p>
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   onClick={() => setConfirmDeleteUuid(null)}
-                  className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                  className="px-3 py-1.5 bg-surface-elevated hover:bg-surface-hover text-secondary rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
                 >
                   Cancel
                 </button>
@@ -530,7 +530,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
                     setConfirmDeleteUuid(null);
                     if (selectedVersion?.uuid === confirmDeleteUuid) setSelectedVersion(null);
                   }}
-                  className="px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                  className="px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
                 >
                   Delete
                 </button>
@@ -548,20 +548,20 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
             }}
           >
             <div
-              className="bg-[#161b22] border border-[#30363d] rounded-lg p-5 max-w-sm w-full space-y-3 shadow-xl"
+              className="bg-surface border border-default rounded-lg p-5 max-w-sm w-full space-y-3 shadow-xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center gap-2 text-red-400 font-semibold text-sm">
                 <AlertTriangle className="w-5 h-5" />
                 <h3>Clear Program History?</h3>
               </div>
-              <p className="text-xs text-gray-300 leading-relaxed">
+              <p className="text-xs text-secondary leading-relaxed">
                 Are you sure you want to delete ALL saved versions for <strong className="text-white">{programName}</strong>? All historical checkpoints and preserved evidence will be permanently deleted.
               </p>
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   onClick={() => setConfirmClearAll(false)}
-                  className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                  className="px-3 py-1.5 bg-surface-elevated hover:bg-surface-hover text-secondary rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
                 >
                   Cancel
                 </button>
@@ -571,7 +571,7 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
                     setConfirmClearAll(false);
                     setSelectedVersion(null);
                   }}
-                  className="px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+                  className="px-4 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold shadow-sm transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
                 >
                   Clear All History
                 </button>
@@ -581,13 +581,13 @@ export const ProgramHistoryModal: React.FC<ProgramHistoryModalProps> = ({
         )}
 
         {/* ── Footer ── */}
-        <div className="shrink-0 border-t border-[#30363d] bg-[#161b22] p-3 flex items-center justify-between">
-          <div className="text-[11px] text-gray-500 font-mono">
+        <div className="shrink-0 border-t border-default bg-surface p-3 flex items-center justify-between">
+          <div className="text-[11px] text-muted font-mono">
             Persistent Dexie.js program history • Phase 3D
           </div>
           <button
             onClick={onClose}
-            className="px-3 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500/50"
+            className="px-3 py-1.5 bg-surface-elevated hover:bg-surface-hover text-secondary rounded text-xs font-medium transition-colors cursor-pointer focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500/50"
           >
             Close
           </button>

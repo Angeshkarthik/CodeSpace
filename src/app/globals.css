@@ -15,10 +15,10 @@
 
 @layer base {
   :root {
-    --bg-canvas: hsl(0, 0%, 98%);
+    --bg-canvas: hsl(220, 14%, 96%);
     --bg-surface: hsl(0, 0%, 100%);
     --bg-surface-elevated: hsl(0, 0%, 100%);
-    --bg-surface-hover: hsl(214, 32%, 96%);
+    --bg-surface-hover: hsl(210, 20%, 98%);
     --border-subtle: hsl(214, 32%, 91%);
     --border-default: hsl(214, 32%, 84%);
     --border-active: hsl(226, 71%, 60%);

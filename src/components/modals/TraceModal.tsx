@@ -40,7 +40,7 @@ function StatusBadge({ status }: { status: TraceResult['status'] }) {
     error: { label: 'Error', cls: 'bg-red-900/40 text-red-300 border-red-700/40' },
     timeout: { label: 'Timed out', cls: 'bg-amber-900/40 text-amber-300 border-amber-700/40' },
     'step-limit': { label: 'Step limit reached', cls: 'bg-amber-900/40 text-amber-300 border-amber-700/40' },
-    unsupported: { label: 'Unsupported', cls: 'bg-gray-700/40 text-gray-300 border-gray-600/40' },
+    unsupported: { label: 'Unsupported', cls: 'bg-surface-hover text-secondary border-gray-600/40' },
   };
   const { label, cls } = map[status] ?? map.error;
   return (
@@ -53,9 +53,9 @@ function StatusBadge({ status }: { status: TraceResult['status'] }) {
 // ─── Helper: format variable value ────────────────────────────────────────────
 function VarValue({ name, value, changed }: { name: string; value: string; changed: boolean }) {
   return (
-    <div className={`flex items-baseline gap-2 py-1 px-2 rounded transition-colors ${changed ? 'bg-amber-900/20 border border-amber-700/30' : 'hover:bg-[#21262d]'}`}>
+    <div className={`flex items-baseline gap-2 py-1 px-2 rounded transition-colors ${changed ? 'bg-amber-900/20 border border-amber-700/30' : 'hover:bg-surface-elevated'}`}>
       <span className="font-mono text-[11px] text-sky-300 shrink-0 min-w-[80px]">{name}</span>
-      <span className={`font-mono text-[11px] break-all ${changed ? 'text-amber-200' : 'text-gray-200'}`}>{value}</span>
+      <span className={`font-mono text-[11px] break-all ${changed ? 'text-amber-200' : 'text-primary'}`}>{value}</span>
       {changed && <span className="text-[9px] text-amber-400 font-semibold shrink-0">changed</span>}
     </div>
   );
@@ -87,7 +87,7 @@ function eventColor(type: TraceEvent['eventType']): string {
     case 'loop': return 'text-cyan-300';
     case 'program-end': return 'text-emerald-300';
     case 'error': return 'text-red-300';
-    default: return 'text-gray-300';
+    default: return 'text-secondary';
   }
 }
 
@@ -208,17 +208,17 @@ export const TraceModal: React.FC<TraceModalProps> = ({
       />
 
       {/* Panel */}
-      <div className="relative z-10 flex flex-col h-full w-[380px] bg-[#0d1117] border-l border-[#30363d] pointer-events-auto shadow-2xl">
+      <div className="relative z-10 flex flex-col h-full w-[380px] bg-canvas border-l border-default pointer-events-auto shadow-2xl">
         {/* ── Header ── */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#30363d] bg-[#161b22] shrink-0">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-default bg-surface shrink-0">
           <div className="flex items-center gap-2">
             <Activity className="w-4 h-4 text-violet-400" />
-            <span className="text-sm font-semibold text-gray-100">Execution Trace</span>
-            <span className="text-[10px] text-gray-500 font-mono px-1.5 py-0.5 bg-[#21262d] border border-[#30363d] rounded uppercase">{language}</span>
+            <span className="text-sm font-semibold text-primary">Execution Trace</span>
+            <span className="text-[10px] text-muted font-mono px-1.5 py-0.5 bg-surface-elevated border border-default rounded uppercase">{language}</span>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded hover:bg-[#30363d] text-gray-400 hover:text-gray-100 transition-colors"
+            className="p-1 rounded hover:bg-surface-hover text-secondary hover:text-primary transition-colors"
             title="Close trace panel"
           >
             <X className="w-4 h-4" />
@@ -227,7 +227,7 @@ export const TraceModal: React.FC<TraceModalProps> = ({
 
         {/* ── Status bar ── */}
         {result && !isLoading && (
-          <div className="flex items-center gap-2 px-4 py-2 bg-[#0d1117] border-b border-[#30363d] shrink-0 text-[11px] text-gray-400">
+          <div className="flex items-center gap-2 px-4 py-2 bg-canvas border-b border-default shrink-0 text-[11px] text-secondary">
             <StatusBadge status={result.status} />
             <span className="ml-auto font-mono">{result.executionTimeMs != null ? `${result.executionTimeMs}ms` : ''}</span>
           </div>
@@ -238,7 +238,7 @@ export const TraceModal: React.FC<TraceModalProps> = ({
 
           {/* Loading */}
           {isLoading && (
-            <div className="flex flex-col items-center justify-center flex-1 gap-3 text-gray-400">
+            <div className="flex flex-col items-center justify-center flex-1 gap-3 text-secondary">
               <div className="w-6 h-6 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
               <span className="text-xs">Tracing execution…</span>
             </div>
@@ -265,9 +265,9 @@ export const TraceModal: React.FC<TraceModalProps> = ({
                 </div>
               )}
               {result?.stderr && (
-                <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-3">
-                  <p className="text-[10px] text-gray-500 mb-1 font-mono uppercase tracking-wide">Compiler / Runtime output</p>
-                  <pre className="text-[10px] text-gray-300 whitespace-pre-wrap font-mono break-all">{result.stderr}</pre>
+                <div className="bg-surface border border-default rounded-lg p-3">
+                  <p className="text-[10px] text-muted mb-1 font-mono uppercase tracking-wide">Compiler / Runtime output</p>
+                  <pre className="text-[10px] text-secondary whitespace-pre-wrap font-mono break-all">{result.stderr}</pre>
                 </div>
               )}
               <button
@@ -281,10 +281,10 @@ export const TraceModal: React.FC<TraceModalProps> = ({
 
           {/* Empty State */}
           {!isLoading && !result && !error && (
-            <div className="flex flex-col items-center justify-center flex-1 py-10 text-gray-500 gap-3 px-4 text-center">
+            <div className="flex flex-col items-center justify-center flex-1 py-10 text-muted gap-3 px-4 text-center">
               <Activity className="w-8 h-8 opacity-30" />
               <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-300">No trace data</p>
+                <p className="text-sm font-medium text-secondary">No trace data</p>
                 <p className="text-[11px]">
                   Run the trace to see step-by-step execution and variable state changes.
                 </p>
@@ -302,20 +302,20 @@ export const TraceModal: React.FC<TraceModalProps> = ({
           {!isLoading && result && totalSteps > 0 && (
             <>
               {/* Step counter */}
-              <div className="px-4 py-2 border-b border-[#30363d] bg-[#0d1117] shrink-0">
+              <div className="px-4 py-2 border-b border-default bg-canvas shrink-0">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono text-gray-300">
+                  <span className="text-xs font-mono text-secondary">
                     Step <span className="text-violet-300 font-bold">{currentStep + 1}</span>
-                    <span className="text-gray-500"> / {totalSteps}</span>
+                    <span className="text-muted"> / {totalSteps}</span>
                   </span>
                   {currentEvent?.line && (
-                    <span className="flex items-center gap-1 text-[11px] text-gray-400 font-mono">
+                    <span className="flex items-center gap-1 text-[11px] text-secondary font-mono">
                       <Code2 className="w-3 h-3" /> Line {currentEvent.line}
                     </span>
                   )}
                 </div>
                 {/* Progress bar */}
-                <div className="mt-1.5 h-1 bg-[#21262d] rounded-full overflow-hidden">
+                <div className="mt-1.5 h-1 bg-surface-elevated rounded-full overflow-hidden">
                   <div
                     className="h-full bg-violet-500 rounded-full transition-all duration-200"
                     style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
@@ -324,16 +324,16 @@ export const TraceModal: React.FC<TraceModalProps> = ({
               </div>
 
               {/* Tabs */}
-              <div className="flex border-b border-[#30363d] shrink-0 bg-[#0d1117]">
+              <div className="flex border-b border-default shrink-0 bg-canvas">
                 <button
                   onClick={() => setActiveTab('state')}
-                  className={`flex items-center gap-1.5 px-4 py-2 text-[11px] font-medium border-b-2 transition-colors ${activeTab === 'state' ? 'border-violet-500 text-violet-300' : 'border-transparent text-gray-400 hover:text-gray-200'}`}
+                  className={`flex items-center gap-1.5 px-4 py-2 text-[11px] font-medium border-b-2 transition-colors ${activeTab === 'state' ? 'border-violet-500 text-violet-300' : 'border-transparent text-secondary hover:text-primary'}`}
                 >
                   <Layers className="w-3 h-3" /> State
                 </button>
                 <button
                   onClick={() => setActiveTab('timeline')}
-                  className={`flex items-center gap-1.5 px-4 py-2 text-[11px] font-medium border-b-2 transition-colors ${activeTab === 'timeline' ? 'border-violet-500 text-violet-300' : 'border-transparent text-gray-400 hover:text-gray-200'}`}
+                  className={`flex items-center gap-1.5 px-4 py-2 text-[11px] font-medium border-b-2 transition-colors ${activeTab === 'timeline' ? 'border-violet-500 text-violet-300' : 'border-transparent text-secondary hover:text-primary'}`}
                 >
                   <List className="w-3 h-3" /> Timeline
                 </button>
@@ -346,8 +346,8 @@ export const TraceModal: React.FC<TraceModalProps> = ({
                 {activeTab === 'state' && currentEvent && (
                   <div className="p-3 space-y-3">
                     {/* Event card */}
-                    <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-3">
-                      <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wide mb-1">Event</p>
+                    <div className="bg-surface border border-default rounded-lg p-3">
+                      <p className="text-[10px] text-muted font-mono uppercase tracking-wide mb-1">Event</p>
                       <p className={`text-xs font-semibold ${eventColor(currentEvent.eventType)}`}>
                         {eventLabel(currentEvent)}
                       </p>
@@ -355,9 +355,9 @@ export const TraceModal: React.FC<TraceModalProps> = ({
 
                     {/* Variables */}
                     {Object.keys(currentEvent.variables).length > 0 && (
-                      <div className="bg-[#161b22] border border-[#30363d] rounded-lg overflow-hidden">
-                        <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wide px-2 pt-2 pb-1">Variables</p>
-                        <div className="divide-y divide-[#21262d]">
+                      <div className="bg-surface border border-default rounded-lg overflow-hidden">
+                        <p className="text-[10px] text-muted font-mono uppercase tracking-wide px-2 pt-2 pb-1">Variables</p>
+                        <div className="divide-y divide-subtle">
                           {Object.entries(currentEvent.variables).map(([k, v]) => (
                             <VarValue key={k} name={k} value={v} changed={changedSet.has(k)} />
                           ))}
@@ -377,8 +377,8 @@ export const TraceModal: React.FC<TraceModalProps> = ({
                             return (
                               <div key={varName} className="text-[11px] font-mono">
                                 <span className="text-amber-300">{varName}</span>
-                                <span className="text-gray-500 mx-1">:</span>
-                                <span className="text-gray-400 line-through">{prevVal}</span>
+                                <span className="text-muted mx-1">:</span>
+                                <span className="text-secondary line-through">{prevVal}</span>
                                 <span className="text-amber-200 mx-1">→</span>
                                 <span className="text-emerald-300">{currVal}</span>
                               </div>
@@ -398,9 +398,9 @@ export const TraceModal: React.FC<TraceModalProps> = ({
 
                     {/* Program output (shown at last step) */}
                     {currentStep === totalSteps - 1 && result.stdout && (
-                      <div className="bg-[#161b22] border border-[#30363d] rounded-lg p-3">
-                        <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wide mb-1">Program Output</p>
-                        <pre className="text-xs text-gray-200 font-mono whitespace-pre-wrap">{result.stdout}</pre>
+                      <div className="bg-surface border border-default rounded-lg p-3">
+                        <p className="text-[10px] text-muted font-mono uppercase tracking-wide mb-1">Program Output</p>
+                        <pre className="text-xs text-primary font-mono whitespace-pre-wrap">{result.stdout}</pre>
                       </div>
                     )}
                   </div>
@@ -414,9 +414,9 @@ export const TraceModal: React.FC<TraceModalProps> = ({
                         key={idx}
                         data-step={idx}
                         onClick={() => handleJumpTo(idx)}
-                        className={`w-full text-left flex items-start gap-2 px-2 py-1.5 rounded transition-colors ${idx === currentStep ? 'bg-violet-900/30 border border-violet-700/40' : 'hover:bg-[#161b22]'}`}
+                        className={`w-full text-left flex items-start gap-2 px-2 py-1.5 rounded transition-colors ${idx === currentStep ? 'bg-violet-900/30 border border-violet-700/40' : 'hover:bg-surface'}`}
                       >
-                        <span className={`text-[10px] font-mono shrink-0 w-6 text-right mt-0.5 ${idx === currentStep ? 'text-violet-300' : 'text-gray-600'}`}>
+                        <span className={`text-[10px] font-mono shrink-0 w-6 text-right mt-0.5 ${idx === currentStep ? 'text-violet-300' : 'text-muted'}`}>
                           {idx + 1}
                         </span>
                         <span className="flex-1 min-w-0">
@@ -424,7 +424,7 @@ export const TraceModal: React.FC<TraceModalProps> = ({
                             {eventLabel(ev)}
                           </span>
                           {ev.line && (
-                            <span className="text-[10px] text-gray-600 font-mono">line {ev.line}</span>
+                            <span className="text-[10px] text-muted font-mono">line {ev.line}</span>
                           )}
                         </span>
                       </button>
@@ -434,20 +434,20 @@ export const TraceModal: React.FC<TraceModalProps> = ({
               </div>
 
               {/* ── Navigation controls ── */}
-              <div className="border-t border-[#30363d] bg-[#0d1117] p-3 shrink-0 space-y-2">
+              <div className="border-t border-default bg-canvas p-3 shrink-0 space-y-2">
                 {/* Prev / Next */}
                 <div className="flex gap-2">
                   <button
                     onClick={handlePrev}
                     disabled={currentStep === 0}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] disabled:opacity-40 text-gray-200 rounded text-xs font-medium transition-colors border border-[#30363d] focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-violet-500/50"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-surface-elevated hover:bg-surface-hover disabled:opacity-40 text-primary rounded text-xs font-medium transition-colors border border-default focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-violet-500/50"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" /> Previous
                   </button>
                   <button
                     onClick={handleNext}
                     disabled={currentStep >= totalSteps - 1}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] disabled:opacity-40 text-gray-200 rounded text-xs font-medium transition-colors border border-[#30363d] focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-violet-500/50"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 bg-surface-elevated hover:bg-surface-hover disabled:opacity-40 text-primary rounded text-xs font-medium transition-colors border border-default focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-violet-500/50"
                   >
                     Next <ChevronRight className="w-3.5 h-3.5" />
                   </button>
@@ -457,7 +457,7 @@ export const TraceModal: React.FC<TraceModalProps> = ({
                 <div className="flex gap-2">
                   <button
                     onClick={handleRestart}
-                    className="p-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 rounded border border-[#30363d] transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-violet-500/50"
+                    className="p-1.5 bg-surface-elevated hover:bg-surface-hover text-secondary rounded border border-default transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-violet-500/50"
                     title="Restart from step 1"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
@@ -477,11 +477,11 @@ export const TraceModal: React.FC<TraceModalProps> = ({
 
         {/* ── Footer: program output (always) ── */}
         {!isLoading && result && result.stdout && totalSteps === 0 && (
-          <div className="border-t border-[#30363d] p-3 shrink-0">
-            <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wide mb-1 flex items-center gap-1">
+          <div className="border-t border-default p-3 shrink-0">
+            <p className="text-[10px] text-muted font-mono uppercase tracking-wide mb-1 flex items-center gap-1">
               <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Program Output
             </p>
-            <pre className="text-xs text-gray-200 font-mono whitespace-pre-wrap max-h-24 overflow-y-auto">{result.stdout}</pre>
+            <pre className="text-xs text-primary font-mono whitespace-pre-wrap max-h-24 overflow-y-auto">{result.stdout}</pre>
           </div>
         )}
 

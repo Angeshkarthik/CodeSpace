@@ -171,7 +171,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
       case 'Not Started':
       default:
         return (
-          <span className="flex items-center gap-1 text-gray-400 font-medium text-xs">
+          <span className="flex items-center gap-1 text-secondary font-medium text-xs">
             <Circle className="w-3.5 h-3.5" /> Not Started
           </span>
         );
@@ -179,29 +179,29 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
   };
 
   return (
-    <div className="flex-1 bg-[#0d1117] text-gray-200 overflow-y-auto p-6 select-none">
+    <div className="flex-1 bg-canvas text-primary overflow-y-auto p-6 select-none">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#30363d]">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-default">
           <div>
             <div className="flex items-center gap-2">
               <BookOpen className="w-6 h-6 text-emerald-400" />
-              <h1 className="text-xl font-bold tracking-tight text-gray-100">Practice Workspace</h1>
+              <h1 className="text-xl font-bold tracking-tight text-primary">Practice Workspace</h1>
             </div>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-secondary mt-1">
               Personal DSA & Placement Practice Organization — link problems directly to CodeSpace programs.
             </p>
           </div>
 
           <div className="flex items-center gap-3 self-start md:self-auto">
             {/* View Switcher Tabs */}
-            <div className="flex items-center bg-[#161b22] border border-[#30363d] rounded-lg p-1 text-xs">
+            <div className="flex items-center bg-surface border border-default rounded-lg p-1 text-xs">
               <button
                 onClick={() => setActiveTab('catalog')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer ${
                   activeTab === 'catalog'
-                    ? 'bg-[#21262d] text-emerald-400 font-semibold shadow-xs'
-                    : 'text-gray-400 hover:text-gray-200'
+                    ? 'bg-surface-elevated text-emerald-400 font-semibold shadow-xs'
+                    : 'text-secondary hover:text-primary'
                 }`}
               >
                 <BookOpen className="w-3.5 h-3.5" />
@@ -212,8 +212,8 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                 onClick={() => setActiveTab('analytics')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer ${
                   activeTab === 'analytics'
-                    ? 'bg-[#21262d] text-cyan-400 font-semibold shadow-xs'
-                    : 'text-gray-400 hover:text-gray-200'
+                    ? 'bg-surface-elevated text-cyan-400 font-semibold shadow-xs'
+                    : 'text-secondary hover:text-primary'
                 }`}
               >
                 <BarChart3 className="w-3.5 h-3.5" />
@@ -227,7 +227,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                   setProblemToEdit(null);
                   setIsModalOpen(true);
                 }}
-                className="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>New Problem</span>
@@ -239,31 +239,31 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
         {activeTab === 'catalog' ? (
           <>
             {/* Search & Filter Bar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#161b22] border border-[#30363d] p-3 rounded-xl">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface border border-default p-3 rounded-xl">
               {/* Client Search */}
               <div className="relative flex-1">
-                <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className="w-4 h-4 text-secondary absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search problems by title or topic..."
-                  className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg pl-9 pr-3 py-1.5 text-xs text-gray-200 focus:outline-none focus:border-emerald-500 font-mono"
+                  className="w-full bg-canvas border border-default rounded-lg pl-9 pr-3 py-1.5 text-xs text-primary focus:outline-none focus:border-blue-500 font-mono"
                 />
               </div>
 
               {/* Filters */}
               <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
                 {/* Difficulty Filter */}
-                <div className="flex items-center bg-[#0d1117] border border-[#30363d] rounded-lg p-1 text-xs">
+                <div className="flex items-center bg-canvas border border-default rounded-lg p-1 text-xs">
                   {(['All', 'Easy', 'Medium', 'Hard'] as const).map((diff) => (
                     <button
                       key={diff}
                       onClick={() => setDifficultyFilter(diff)}
                       className={`px-2.5 py-1 rounded text-xs transition-colors ${
                         difficultyFilter === diff
-                          ? 'bg-[#21262d] text-emerald-400 font-semibold shadow-xs'
-                          : 'text-gray-400 hover:text-gray-200'
+                          ? 'bg-surface-elevated text-emerald-400 font-semibold shadow-xs'
+                          : 'text-secondary hover:text-primary'
                       }`}
                     >
                       {diff}
@@ -272,15 +272,15 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                 </div>
 
                 {/* Status Filter */}
-                <div className="flex items-center bg-[#0d1117] border border-[#30363d] rounded-lg p-1 text-xs">
+                <div className="flex items-center bg-canvas border border-default rounded-lg p-1 text-xs">
                   {(['All', 'Not Started', 'In Progress', 'Solved'] as const).map((st) => (
                     <button
                       key={st}
                       onClick={() => setStatusFilter(st)}
                       className={`px-2.5 py-1 rounded text-xs transition-colors ${
                         statusFilter === st
-                          ? 'bg-[#21262d] text-emerald-400 font-semibold shadow-xs'
-                          : 'text-gray-400 hover:text-gray-200'
+                          ? 'bg-surface-elevated text-emerald-400 font-semibold shadow-xs'
+                          : 'text-secondary hover:text-primary'
                       }`}
                     >
                       {st}
@@ -299,17 +299,17 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                   return (
                     <div
                       key={prob.uuid}
-                      className="bg-[#161b22] border border-[#30363d] hover:border-gray-600 rounded-xl p-4 flex flex-col justify-between transition-all group shadow-xs"
+                      className="bg-surface border border-default hover:border-active rounded-xl p-4 flex flex-col justify-between transition-all group shadow-xs"
                     >
                       <div>
                         {/* Header Row: Title & Badges */}
                         <div className="flex items-start justify-between gap-2 mb-2">
                           <div className="min-w-0 flex-1">
-                            <h3 className="text-sm font-bold text-gray-100 group-hover:text-emerald-400 transition-colors break-words">
+                            <h3 className="text-sm font-bold text-primary group-hover:text-emerald-400 transition-colors break-words">
                               {prob.title}
                             </h3>
                             <div className="flex items-center gap-2 mt-1 flex-wrap">
-                              <span className="flex items-center gap-1 text-[11px] text-gray-400 min-w-0 truncate">
+                              <span className="flex items-center gap-1 text-[11px] text-secondary min-w-0 truncate">
                                 <Tag className="w-3 h-3 text-sky-400 shrink-0" />
                                 <span className="truncate">{prob.topic}</span>
                               </span>
@@ -324,7 +324,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                               onChange={(e) =>
                                 onUpdateProblem(prob.uuid, { status: e.target.value as PracticeStatus })
                               }
-                              className="bg-[#0d1117] border border-[#30363d] text-gray-300 hover:border-gray-500 rounded px-2 py-1 text-xs focus:outline-none cursor-pointer"
+                              className="bg-canvas border border-default text-secondary hover:border-active rounded px-2 py-1 text-xs focus:outline-none cursor-pointer"
                             >
                               <option value="Not Started">Not Started</option>
                               <option value="In Progress">In Progress</option>
@@ -335,23 +335,23 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
 
                         {/* Description Excerpt */}
                         {prob.description && (
-                          <p className="text-xs text-gray-400 line-clamp-2 mb-3 bg-[#0d1117]/60 p-2 rounded border border-[#30363d]/50 font-sans break-words">
+                          <p className="text-xs text-secondary line-clamp-2 mb-3 bg-canvas/60 p-2 rounded border border-default/50 font-sans break-words">
                             {prob.description}
                           </p>
                         )}
                       </div>
 
                       {/* Footer Row: Linked Program Info & Action Buttons */}
-                      <div className="pt-3 border-t border-[#30363d]/70 flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
+                      <div className="pt-3 border-t border-default/70 flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
                         {/* Linked Program Tag */}
-                        <div className="text-[11px] text-gray-400 truncate min-w-0 flex-1">
+                        <div className="text-[11px] text-secondary truncate min-w-0 flex-1">
                           {linkedProgram ? (
                             <span className="flex items-center gap-1 font-mono text-emerald-400 min-w-0">
                               <FileCode className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                               <span className="truncate">{linkedProgram.name}</span>
                             </span>
                           ) : (
-                            <span className="text-gray-500 italic">No program linked</span>
+                            <span className="text-muted italic">No program linked</span>
                           )}
                         </div>
 
@@ -360,7 +360,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                           {/* Attempts Button */}
                           <button
                             onClick={() => setHistoryProblem(prob)}
-                            className="flex items-center gap-1 px-2 py-1 bg-[#0d1117] hover:bg-[#21262d] text-gray-300 border border-[#30363d] rounded text-xs font-mono transition-colors"
+                            className="flex items-center gap-1 px-2 py-1 bg-canvas hover:bg-surface-elevated text-secondary border border-default rounded text-xs font-mono transition-colors"
                             title="View Attempt History"
                             aria-label="View Attempt History"
                           >
@@ -374,7 +374,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                               setProblemToEdit(prob);
                               setIsModalOpen(true);
                             }}
-                            className="p-1.5 text-gray-400 hover:text-gray-200 hover:bg-[#21262d] rounded transition-colors"
+                            className="p-1.5 text-secondary hover:text-primary hover:bg-surface-elevated rounded transition-colors"
                             title="Edit practice problem"
                             aria-label="Edit problem"
                           >
@@ -384,7 +384,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                           {/* Delete Button */}
                           <button
                             onClick={() => setProblemToDelete(prob)}
-                            className="p-1.5 text-gray-400 hover:text-red-400 hover:bg-red-950/30 rounded transition-colors"
+                            className="p-1.5 text-secondary hover:text-red-400 hover:bg-red-950/30 rounded transition-colors"
                             title="Delete practice problem"
                             aria-label="Delete problem"
                           >
@@ -395,7 +395,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                           {linkedProgram ? (
                             <button
                               onClick={() => onOpenPracticeProgram(prob, linkedProgram.uuid)}
-                              className="flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                              className="flex items-center gap-1 px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-semibold shadow-xs transition-colors cursor-pointer"
                             >
                               <span>Open Practice</span>
                               <ExternalLink className="w-3 h-3" />
@@ -406,7 +406,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                                 setProblemToLink(prob);
                                 setSelectedProgramToLink(programs.length > 0 ? programs[0].uuid : '');
                               }}
-                              className="flex items-center gap-1 px-3 py-1 bg-[#21262d] hover:bg-[#30363d] text-gray-200 border border-[#30363d] rounded text-xs font-medium cursor-pointer transition-colors"
+                              className="flex items-center gap-1 px-3 py-1 bg-surface-elevated hover:bg-surface-hover text-primary border border-default rounded text-xs font-medium cursor-pointer transition-colors"
                             >
                               <span>Start Practice</span>
                               <Plus className="w-3 h-3 text-emerald-400" />
@@ -420,14 +420,14 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
               </div>
             ) : (
               /* Empty State */
-              <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-12 text-center space-y-4">
+              <div className="bg-surface border border-default rounded-xl p-12 text-center space-y-4">
                 <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mx-auto">
                   <BookOpen className="w-6 h-6" />
                 </div>
                 {problems.length === 0 ? (
                   <div>
-                    <h3 className="text-base font-semibold text-gray-200">Your practice workspace is empty</h3>
-                    <p className="text-xs text-gray-400 max-w-sm mx-auto mt-1">
+                    <h3 className="text-base font-semibold text-primary">Your practice workspace is empty</h3>
+                    <p className="text-xs text-secondary max-w-sm mx-auto mt-1">
                       Create a problem to start organizing your placement preparation and link your code.
                     </p>
                     <button
@@ -435,7 +435,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                         setProblemToEdit(null);
                         setIsModalOpen(true);
                       }}
-                      className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
+                      className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
                     >
                       <Plus className="w-4 h-4" />
                       <span>+ New Problem</span>
@@ -443,8 +443,8 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                   </div>
                 ) : (
                   <div>
-                    <h3 className="text-base font-semibold text-gray-200">No matching problems found</h3>
-                    <p className="text-xs text-gray-400 max-w-sm mx-auto mt-1">
+                    <h3 className="text-base font-semibold text-primary">No matching problems found</h3>
+                    <p className="text-xs text-secondary max-w-sm mx-auto mt-1">
                       Try adjusting your search query or filter selection.
                     </p>
                   </div>
@@ -489,7 +489,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
           }}
         >
           <div
-            className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-md w-full space-y-4 shadow-2xl"
+            className="bg-surface border border-default rounded-xl p-5 max-w-md w-full space-y-4 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3">
@@ -497,19 +497,19 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                 <AlertCircle className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-gray-100">Delete Practice Problem</h3>
-                <p className="text-xs text-gray-400">Are you sure you want to delete "{problemToDelete.title}"?</p>
+                <h3 className="text-sm font-semibold text-primary">Delete Practice Problem</h3>
+                <p className="text-xs text-secondary">Are you sure you want to delete "{problemToDelete.title}"?</p>
               </div>
             </div>
 
-            <p className="text-xs text-gray-400 bg-[#0d1117] p-2.5 rounded border border-[#30363d]">
+            <p className="text-xs text-secondary bg-canvas p-2.5 rounded border border-default">
               Note: Deleting this practice problem will NOT delete any linked CodeSpace program.
             </p>
 
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 onClick={() => setProblemToDelete(null)}
-                className="px-3.5 py-1.5 bg-[#21262d] hover:bg-[#30363d] text-gray-300 border border-[#30363d] rounded text-xs transition-colors"
+                className="px-3.5 py-1.5 bg-surface-elevated hover:bg-surface-hover text-secondary border border-default rounded text-xs transition-colors"
               >
                 Cancel
               </button>
@@ -533,30 +533,30 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
           }}
         >
           <div
-            className="bg-[#161b22] border border-[#30363d] rounded-xl p-5 max-w-md w-full space-y-4 shadow-2xl"
+            className="bg-surface border border-default rounded-xl p-5 max-w-md w-full space-y-4 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-2 border-b border-[#30363d]">
-              <h3 className="text-sm font-semibold text-gray-100">Start Practice: {problemToLink.title}</h3>
+            <div className="flex items-center justify-between pb-2 border-b border-default">
+              <h3 className="text-sm font-semibold text-primary">Start Practice: {problemToLink.title}</h3>
               <button
                 onClick={() => setProblemToLink(null)}
-                className="p-1 text-gray-400 hover:text-gray-200"
+                className="p-1 text-secondary hover:text-primary"
               >
                 ✕
               </button>
             </div>
 
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-secondary">
               Select an existing CodeSpace program to link to this problem, or create a brand new program.
             </p>
 
             {programs.length > 0 && (
               <div className="space-y-2">
-                <label className="block text-xs font-medium text-gray-300">Link Existing Program</label>
+                <label className="block text-xs font-medium text-secondary">Link Existing Program</label>
                 <select
                   value={selectedProgramToLink}
                   onChange={(e) => setSelectedProgramToLink(e.target.value)}
-                  className="w-full bg-[#0d1117] border border-[#30363d] rounded px-3 py-2 text-xs font-mono text-gray-200"
+                  className="w-full bg-canvas border border-default rounded px-3 py-2 text-xs font-mono text-primary"
                 >
                   {programs.map((p) => (
                     <option key={p.uuid} value={p.uuid}>
@@ -567,7 +567,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                 <button
                   onClick={handleLinkExistingSubmit}
                   disabled={!selectedProgramToLink}
-                  className="w-full py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-xs font-semibold rounded transition-colors"
+                  className="w-full py-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-semibold rounded transition-colors"
                 >
                   Link Selected Program & Open
                 </button>
@@ -575,9 +575,9 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
             )}
 
             <div className="relative flex py-1 items-center">
-              <div className="flex-grow border-t border-[#30363d]"></div>
-              <span className="flex-shrink mx-2 text-[10px] text-gray-500 uppercase font-mono">Or</span>
-              <div className="flex-grow border-t border-[#30363d]"></div>
+              <div className="flex-grow border-t border-default"></div>
+              <span className="flex-shrink mx-2 text-[10px] text-muted uppercase font-mono">Or</span>
+              <div className="flex-grow border-t border-default"></div>
             </div>
 
             <button
@@ -586,7 +586,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                 setProblemToLink(null);
                 await onCreateAndLinkProgram(targetProb);
               }}
-              className="w-full py-2 bg-[#21262d] hover:bg-[#30363d] text-emerald-400 border border-emerald-500/30 text-xs font-semibold rounded transition-colors flex items-center justify-center gap-1.5"
+              className="w-full py-2 bg-surface-elevated hover:bg-surface-hover text-emerald-400 border border-emerald-500/30 text-xs font-semibold rounded transition-colors flex items-center justify-center gap-1.5"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Create New Program for this Problem</span>

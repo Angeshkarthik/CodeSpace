@@ -29,7 +29,7 @@ export interface AppSettings {
   autoSave: boolean;
 }
 
-export type ConsoleTab = 'input' | 'output' | 'errors' | 'tests';
+export type ConsoleTab = 'run_io' | 'errors' | 'tests';
 
 export interface StarterTemplate {
   name: string;
