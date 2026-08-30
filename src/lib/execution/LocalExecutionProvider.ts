@@ -118,7 +118,8 @@ export class LocalExecutionProvider implements IExecutionProvider {
     const exeName = this.isWindows ? 'main.exe' : 'main';
     const exePath = path.join(tmpDir, exeName);
 
-    await fs.writeFile(sourcePath, code, 'utf-8');
+    const cEofCheck = `\n\n// --- CODESPACE INTERNAL EOF CHECK ---\n#include <stdio.h>\n__attribute__((destructor)) static void __codespace_eof_check() {\n    if (feof(stdin)) fprintf(stderr, "[CODESPACE_EOF_ERROR]");\n}\n`;
+    await fs.writeFile(sourcePath, code + cEofCheck, 'utf-8');
 
     // Compile C
     const compile = await this.runProcess('gcc', ['main.c', '-o', exeName], tmpDir, '', DEFAULT_TIMEOUT_MS);
@@ -165,10 +166,28 @@ export class LocalExecutionProvider implements IExecutionProvider {
       };
     }
 
+    let finalStdout = run.stdout;
+    let finalStderr = run.stderr;
+    const hitEof = finalStderr.includes('[CODESPACE_EOF_ERROR]');
+    
+    if (hitEof) {
+      finalStderr = finalStderr.replace('[CODESPACE_EOF_ERROR]', '');
+    }
+
+    if (hitEof && stdin === '') {
+      return {
+        status: 'success',
+        stdout: 'Input required\n\nThe program tried to read from standard input,\nbut no input was provided.\n\nEnter input in the Input panel and run again.',
+        stderr: finalStderr,
+        exitCode: 0,
+        executionTimeMs
+      };
+    }
+
     return {
       status: 'success',
-      stdout: run.stdout,
-      stderr: run.stderr,
+      stdout: finalStdout,
+      stderr: finalStderr,
       exitCode: 0,
       executionTimeMs
     };
@@ -180,7 +199,8 @@ export class LocalExecutionProvider implements IExecutionProvider {
     const exeName = this.isWindows ? 'main.exe' : 'main';
     const exePath = path.join(tmpDir, exeName);
 
-    await fs.writeFile(sourcePath, code, 'utf-8');
+    const cppEofCheck = `\n\n// --- CODESPACE INTERNAL EOF CHECK ---\n#include <iostream>\n__attribute__((destructor)) static void __codespace_eof_check() {\n    if (std::cin.eof()) std::cerr << "[CODESPACE_EOF_ERROR]";\n}\n`;
+    await fs.writeFile(sourcePath, code + cppEofCheck, 'utf-8');
 
     // Compile C++
     const compile = await this.runProcess('g++', ['main.cpp', '-o', exeName], tmpDir, '', DEFAULT_TIMEOUT_MS);
@@ -227,10 +247,28 @@ export class LocalExecutionProvider implements IExecutionProvider {
       };
     }
 
+    let finalStdout = run.stdout;
+    let finalStderr = run.stderr;
+    const hitEof = finalStderr.includes('[CODESPACE_EOF_ERROR]');
+    
+    if (hitEof) {
+      finalStderr = finalStderr.replace('[CODESPACE_EOF_ERROR]', '');
+    }
+
+    if (hitEof && stdin === '') {
+      return {
+        status: 'success',
+        stdout: 'Input required\n\nThe program tried to read from standard input,\nbut no input was provided.\n\nEnter input in the Input panel and run again.',
+        stderr: finalStderr,
+        exitCode: 0,
+        executionTimeMs
+      };
+    }
+
     return {
       status: 'success',
-      stdout: run.stdout,
-      stderr: run.stderr,
+      stdout: finalStdout,
+      stderr: finalStderr,
       exitCode: 0,
       executionTimeMs
     };
@@ -263,6 +301,16 @@ export class LocalExecutionProvider implements IExecutionProvider {
     }
 
     if (run.exitCode !== 0) {
+      if (stdin === '' && run.stderr.includes('EOFError: EOF when reading a line')) {
+        return {
+          status: 'success',
+          stdout: 'Input required\n\nThe program tried to read from standard input,\nbut no input was provided.\n\nEnter input in the Input panel and run again.',
+          stderr: '',
+          exitCode: 0,
+          executionTimeMs
+        };
+      }
+
       return {
         status: 'runtime_error',
         stdout: run.stdout,
@@ -322,6 +370,16 @@ export class LocalExecutionProvider implements IExecutionProvider {
     }
 
     if (run.exitCode !== 0) {
+      if (stdin === '' && run.stderr.includes('java.util.NoSuchElementException')) {
+        return {
+          status: 'success',
+          stdout: 'Input required\n\nThe program tried to read from standard input,\nbut no input was provided.\n\nEnter input in the Input panel and run again.',
+          stderr: '',
+          exitCode: 0,
+          executionTimeMs
+        };
+      }
+
       return {
         status: 'runtime_error',
         stdout: run.stdout,
@@ -342,6 +400,13 @@ export class LocalExecutionProvider implements IExecutionProvider {
 
   /**
    * Safely spawns child process with separate args, stdin piping, timeout control, and output character limits.
+   * 
+   * EXECUTION MODEL (AOT / Non-Interactive):
+   * CodeSpace provides stdin Ahead-Of-Time (AOT). The entire stdin payload is written to the child process
+   * immediately, and then the stream is closed (EOF). It is NOT an interactive shell.
+   * If stdinText is empty, the process receives EOF instantly. Programs that attempt to read from stdin 
+   * (e.g. C++ `cin >> n`) will fail immediately. Uninitialized variables will remain uninitialized, 
+   * which may result in printing deterministic stack garbage (e.g. 4201019 on Windows GCC).
    */
   private runProcess(
     command: string,
@@ -371,15 +436,16 @@ export class LocalExecutionProvider implements IExecutionProvider {
         }
       }, timeoutMs);
 
-      // Write stdin if provided
+      // Write stdin if provided (AOT Stdin Model)
       if (stdinText && child.stdin) {
         try {
           child.stdin.write(stdinText);
-          child.stdin.end();
+          child.stdin.end(); // EOF triggered
         } catch {
           // Ignore stdin stream errors if process exits early
         }
       } else if (child.stdin) {
+        // Explicitly send EOF immediately if input is empty
         child.stdin.end();
       }
 

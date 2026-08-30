@@ -84,7 +84,6 @@ export const WorkspaceContainer: React.FC = () => {
 
   // Evidence refs to guarantee zero stale evidence attachment to practice attempts
   const testedCodeRef = useRef<string | null>(null);
-  const executedCodeRef = useRef<string | null>(null);
   const analyzedCodeRef = useRef<string | null>(null);
 
   // Practice Attempt modals & prompts state
@@ -124,8 +123,13 @@ export const WorkspaceContainer: React.FC = () => {
   const [testProgress, setTestProgress] = useState<{ completed: number; total: number } | null>(null);
   const [testSummary, setTestSummary] = useState<BatchTestSummary | null>(null);
 
-  // Single Execution Result state
-  const [executionResult, setExecutionResult] = useState<ExecutionResult | null>(null);
+  // Single Execution Result state snapshot
+  interface RunSnapshot {
+    code: string;
+    stdin: string;
+    result: ExecutionResult;
+  }
+  const [runSnapshot, setRunSnapshot] = useState<RunSnapshot | null>(null);
 
   // Static Analysis & AI Review state
   const [analysisResult, setAnalysisResult] = useState<CodeAnalysisResult | null>(null);
@@ -193,10 +197,11 @@ export const WorkspaceContainer: React.FC = () => {
   const [isConsoleOpen, setIsConsoleOpen] = useState(true);
   const [consoleTab, setConsoleTab] = useState<ConsoleTab>('run_io');
   const [inputText, setInputText] = useState('');
-  const [outputLog, setOutputLog] = useState('');
-  const [errorLog, setErrorLog] = useState('');
-  const [executionTimeMs, setExecutionTimeMs] = useState<number | null>(null);
-  const [exitCode, setExitCode] = useState<number | null>(null);
+  const outputLog = runSnapshot?.result.stdout ?? '';
+  const errorLog = runSnapshot?.result.stderr ?? '';
+  const executionTimeMs = runSnapshot?.result.executionTimeMs ?? null;
+  const exitCode = runSnapshot?.result.exitCode ?? null;
+  const executionResult = runSnapshot?.result ?? null;
 
   // Modals state
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
@@ -298,7 +303,7 @@ export const WorkspaceContainer: React.FC = () => {
     }
     // Clear previous test summary and execution context when switching active program
     setTestSummary(null);
-    setExecutionResult(null);
+    setRunSnapshot(null);
     setTestProgress(null);
     setAnalysisResult(null);
     setAiReview(null);
@@ -314,6 +319,9 @@ export const WorkspaceContainer: React.FC = () => {
     setBenchmarkFingerprint(null);
     setBenchmarkProgress(null);
     setSnapshotA(null);
+    
+    // Clear execution inputs when switching programs
+    setInputText('');
   }, [activeProgram?.uuid]);
 
   // Phase 3D: Load versions for active program
@@ -363,7 +371,7 @@ export const WorkspaceContainer: React.FC = () => {
 
     // Clear stale test, execution, static analysis, and AI review when code is modified
     setTestSummary(null);
-    setExecutionResult(null);
+    setRunSnapshot(null);
     setAnalysisResult(null);
     setAiReview(null);
     setAiError(null);
@@ -447,7 +455,7 @@ export const WorkspaceContainer: React.FC = () => {
     }
 
     // 4. Clear all stale state & evidence associated with the deleted program
-    setExecutionResult(null);
+    setRunSnapshot(null);
     setTestSummary(null);
     setAnalysisResult(null);
     setAiReview(null);
@@ -566,8 +574,8 @@ export const WorkspaceContainer: React.FC = () => {
     const isTestValid = testSummary && testedCodeRef.current === currentCode;
     const validTests = isTestValid ? testSummary : null;
 
-    const isExecValid = executionResult && executedCodeRef.current === currentCode;
-    const validExecution = isExecValid ? executionResult : null;
+    const isExecValid = runSnapshot && runSnapshot.code === currentCode;
+    const validExecution = isExecValid ? runSnapshot.result : null;
 
     const isAnalysisValid = analysisResult && analyzedCodeRef.current === currentCode;
     const validAnalysis = isAnalysisValid ? analysisResult : null;
@@ -674,7 +682,7 @@ export const WorkspaceContainer: React.FC = () => {
     setIsUnsaved(false);
 
     // 6. Invalidate all stale runtime evidence when language changes
-    setExecutionResult(null);
+    setRunSnapshot(null);
     setTestSummary(null);
     setAnalysisResult(null);
     setAiReview(null);
@@ -696,10 +704,6 @@ export const WorkspaceContainer: React.FC = () => {
 
     setIsRunning(true);
     setIsConsoleOpen(true);
-    setOutputLog('');
-    setErrorLog('');
-    setExecutionTimeMs(null);
-    setExitCode(null);
 
     try {
       const res = await fetch('/api/execute', {
@@ -719,12 +723,11 @@ export const WorkspaceContainer: React.FC = () => {
       // Guard against race condition: ignore response if active program changed
       if (activeUuidRef.current !== reqProgUuid) return;
 
-      setExecutionResult(data);
-      executedCodeRef.current = currentCode;
-      setOutputLog(data.stdout || '');
-      setErrorLog(data.stderr || '');
-      setExecutionTimeMs(data.executionTimeMs ?? null);
-      setExitCode(data.exitCode ?? null);
+      setRunSnapshot({
+        code: currentCode,
+        stdin: inputText,
+        result: data,
+      });
 
       if (
         data.status === 'compile_error' ||
@@ -738,7 +741,15 @@ export const WorkspaceContainer: React.FC = () => {
       }
     } catch (err: any) {
       if (activeUuidRef.current !== reqProgUuid) return;
-      setErrorLog(`Execution request failed: ${err.message || String(err)}`);
+      setRunSnapshot({
+        code: currentCode,
+        stdin: inputText,
+        result: {
+          status: 'execution_error',
+          stdout: '',
+          stderr: `Execution request failed: ${err.message || String(err)}`,
+        } as ExecutionResult
+      });
       setConsoleTab('errors');
     } finally {
       if (activeUuidRef.current === reqProgUuid) {
@@ -1086,7 +1097,7 @@ export const WorkspaceContainer: React.FC = () => {
     setInputText(version.input ?? '');
 
     // Invalidate stale runtime state
-    setExecutionResult(null);
+    setRunSnapshot(null);
     setTestSummary(null);
     setTestProgress(null);
     setAnalysisResult(null);
@@ -1276,6 +1287,7 @@ export const WorkspaceContainer: React.FC = () => {
               inputText={inputText}
               onInputChange={(val) => {
                 setInputText(val);
+                setRunSnapshot(null);
                 // Invalidate benchmark when input changes (result tied to code+input+language)
                 if (benchmarkFingerprint !== null) setBenchmarkFingerprint(null);
               }}
@@ -1285,10 +1297,7 @@ export const WorkspaceContainer: React.FC = () => {
               exitCode={exitCode}
               isRunning={isRunning}
               onClearConsole={() => {
-                setOutputLog('');
-                setErrorLog('');
-                setExecutionTimeMs(null);
-                setExitCode(null);
+                setRunSnapshot(null);
               }}
               testCases={testCases}
               onAddTestCase={handleAddTestCase}

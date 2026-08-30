@@ -95,9 +95,17 @@ export const ConsolePanel: React.FC<ConsolePanelProps> = ({
       const rect = runIoContainer.getBoundingClientRect();
       const relativeY = e.clientY - rect.top;
       let ratio = relativeY / rect.height;
-      // Clamp between 15% and 85% to avoid crushing either pane
-      ratio = Math.max(0.15, Math.min(ratio, 0.85));
-      setInputHeightRatio(ratio);
+      // Clamp between 15% and 85% and also respect minimum pixel heights
+      const minInputPx = 80;
+      const minOutputPx = 100;
+      
+      // If the container is too small, just keep the default
+      if (rect.height > minInputPx + minOutputPx) {
+        const minRatio = minInputPx / rect.height;
+        const maxRatio = 1 - (minOutputPx / rect.height);
+        ratio = Math.max(minRatio, Math.max(0.15, Math.min(ratio, Math.min(0.85, maxRatio))));
+        setInputHeightRatio(ratio);
+      }
     };
 
     const handleMouseUp = () => setIsVerticalResizing(false);
@@ -337,18 +345,38 @@ export const ConsolePanel: React.FC<ConsolePanelProps> = ({
                     <Loader2 className="w-5 h-5 animate-spin text-amber-400" aria-hidden="true" />
                     <span className="font-sans font-medium text-xs text-primary">Executing...</span>
                   </div>
-                ) : outputLog ? (
-                  <pre
-                    ref={outputScrollRef}
-                    onScroll={handleOutputScroll}
-                    className="text-emerald-600 dark:text-emerald-400 whitespace-pre-wrap break-words break-all font-mono text-[13px] leading-relaxed flex-1 overflow-y-auto"
-                  >
-                    {outputLog}
-                  </pre>
-                ) : executionTimeMs !== undefined && executionTimeMs !== null && exitCode === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-secondary space-y-1 select-none overflow-y-auto">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-500 mb-1" aria-hidden="true" />
-                    <span className="font-sans font-medium text-xs text-primary">Success (No Output)</span>
+                ) : executionTimeMs !== undefined && executionTimeMs !== null ? (
+                  <div className="h-full flex flex-col min-h-0">
+                    {outputLog ? (
+                      <pre
+                        ref={outputScrollRef}
+                        onScroll={handleOutputScroll}
+                        className="text-emerald-600 dark:text-emerald-400 whitespace-pre-wrap break-words break-all font-mono text-[13px] leading-relaxed flex-1 overflow-y-auto mb-2"
+                      >
+                        {outputLog}
+                      </pre>
+                    ) : (
+                      <div className="flex-1 flex flex-col items-center justify-center text-secondary space-y-1 select-none overflow-y-auto mb-2">
+                        {exitCode === 0 ? (
+                          <>
+                            <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-500 mb-1" aria-hidden="true" />
+                            <span className="font-sans font-medium text-xs text-primary">Success (No Output)</span>
+                          </>
+                        ) : (
+                          <>
+                            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-500 mb-1" aria-hidden="true" />
+                            <span className="font-sans font-medium text-xs text-primary">Execution Failed</span>
+                          </>
+                        )}
+                      </div>
+                    )}
+                    <div className="pt-2 border-t border-subtle flex items-center justify-between text-[11px] text-muted font-mono shrink-0">
+                      <span className={`flex items-center gap-1 ${exitCode === 0 ? 'text-emerald-600 dark:text-emerald-500' : 'text-red-600 dark:text-red-500'} font-medium`}>
+                        {exitCode === 0 ? <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" /> : <AlertCircle className="w-3.5 h-3.5" aria-hidden="true" />}
+                        <span>Finished execution</span>
+                      </span>
+                      <span>exit code {exitCode}</span>
+                    </div>
                   </div>
                 ) : (
                   <div className="h-full flex flex-col items-center justify-center text-muted space-y-1 select-none overflow-y-auto">
