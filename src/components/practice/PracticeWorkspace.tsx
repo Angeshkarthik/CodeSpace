@@ -135,19 +135,19 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
     switch (difficulty) {
       case 'Easy':
         return (
-          <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+          <span className="text-[11px] font-medium text-emerald-500 dark:text-emerald-400">
             Easy
           </span>
         );
       case 'Medium':
         return (
-          <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/30">
+          <span className="text-[11px] font-medium text-amber-500 dark:text-amber-400">
             Medium
           </span>
         );
       case 'Hard':
         return (
-          <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-red-500/10 text-red-400 border border-red-500/30">
+          <span className="text-[11px] font-medium text-red-500 dark:text-red-400">
             Hard
           </span>
         );
@@ -182,25 +182,22 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
     <div className="flex-1 bg-canvas text-primary overflow-y-auto p-6 select-none">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-default">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-subtle">
           <div>
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-6 h-6 text-emerald-400" />
-              <h1 className="text-xl font-bold tracking-tight text-primary">Practice Workspace</h1>
-            </div>
-            <p className="text-xs text-secondary mt-1">
+            <h1 className="text-lg font-semibold tracking-tight text-primary">Practice Workspace</h1>
+            <p className="text-xs text-muted mt-0.5">
               Personal DSA & Placement Practice Organization — link problems directly to CodeSpace programs.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 self-start md:self-auto">
+          <div className="flex items-center gap-2 self-start md:self-auto">
             {/* View Switcher Tabs */}
-            <div className="flex items-center bg-surface border border-default rounded-lg p-1 text-xs">
+            <div className="flex items-center bg-surface-elevated rounded-md p-0.5 text-xs">
               <button
                 onClick={() => setActiveTab('catalog')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-medium transition-colors cursor-pointer ${
                   activeTab === 'catalog'
-                    ? 'bg-surface-elevated text-emerald-400 font-semibold shadow-xs'
+                    ? 'bg-surface-hover text-emerald-400 shadow-xs'
                     : 'text-secondary hover:text-primary'
                 }`}
               >
@@ -210,9 +207,9 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
 
               <button
                 onClick={() => setActiveTab('analytics')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-medium transition-colors cursor-pointer ${
                   activeTab === 'analytics'
-                    ? 'bg-surface-elevated text-cyan-400 font-semibold shadow-xs'
+                    ? 'bg-surface-hover text-cyan-400 shadow-xs'
                     : 'text-secondary hover:text-primary'
                 }`}
               >
@@ -227,9 +224,9 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                   setProblemToEdit(null);
                   setIsModalOpen(true);
                 }}
-                className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-md text-xs font-semibold transition-colors cursor-pointer"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-3.5 h-3.5" />
                 <span>New Problem</span>
               </button>
             )}
@@ -239,48 +236,50 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
         {activeTab === 'catalog' ? (
           <>
             {/* Search & Filter Bar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface border border-default p-3 rounded-xl">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 py-2">
               {/* Client Search */}
-              <div className="relative flex-1">
-                <Search className="w-4 h-4 text-secondary absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <div className="relative flex-1 max-w-sm">
+                <Search className="w-3.5 h-3.5 text-secondary absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search problems by title or topic..."
-                  className="w-full bg-canvas border border-default rounded-lg pl-9 pr-3 py-1.5 text-xs text-primary focus:outline-none focus:border-blue-500 font-mono"
+                  className="w-full bg-surface border border-subtle rounded-md pl-8 pr-3 py-1.5 text-xs text-primary focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 font-mono"
                 />
               </div>
 
               {/* Filters */}
               <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
                 {/* Difficulty Filter */}
-                <div className="flex items-center bg-canvas border border-default rounded-lg p-1 text-xs">
+                <div className="flex items-center gap-1 text-xs">
                   {(['All', 'Easy', 'Medium', 'Hard'] as const).map((diff) => (
                     <button
                       key={diff}
                       onClick={() => setDifficultyFilter(diff)}
-                      className={`px-2.5 py-1 rounded text-xs transition-colors ${
+                      className={`px-2.5 py-1 rounded-md text-xs transition-colors ${
                         difficultyFilter === diff
-                          ? 'bg-surface-elevated text-emerald-400 font-semibold shadow-xs'
-                          : 'text-secondary hover:text-primary'
+                          ? 'bg-surface-elevated text-primary font-medium'
+                          : 'text-secondary hover:bg-surface hover:text-primary'
                       }`}
                     >
                       {diff}
                     </button>
                   ))}
                 </div>
+                
+                <div className="w-px h-4 bg-surface-hover shrink-0" />
 
                 {/* Status Filter */}
-                <div className="flex items-center bg-canvas border border-default rounded-lg p-1 text-xs">
+                <div className="flex items-center gap-1 text-xs">
                   {(['All', 'Not Started', 'In Progress', 'Solved'] as const).map((st) => (
                     <button
                       key={st}
                       onClick={() => setStatusFilter(st)}
-                      className={`px-2.5 py-1 rounded text-xs transition-colors ${
+                      className={`px-2.5 py-1 rounded-md text-xs transition-colors ${
                         statusFilter === st
-                          ? 'bg-surface-elevated text-emerald-400 font-semibold shadow-xs'
-                          : 'text-secondary hover:text-primary'
+                          ? 'bg-surface-elevated text-primary font-medium'
+                          : 'text-secondary hover:bg-surface hover:text-primary'
                       }`}
                     >
                       {st}
@@ -292,113 +291,111 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
 
             {/* Practice Problem Cards List */}
             {filteredProblems.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-col">
                 {filteredProblems.map((prob) => {
                   const linkedProgram = programs.find((p) => p.uuid === prob.programUuid) || null;
 
                   return (
                     <div
                       key={prob.uuid}
-                      className="bg-surface border border-default hover:border-active rounded-xl p-4 flex flex-col justify-between transition-all group shadow-xs"
+                      className="group flex flex-col gap-3 py-5 border-b border-subtle last:border-b-0"
                     >
-                      <div>
-                        {/* Header Row: Title & Badges */}
-                        <div className="flex items-start justify-between gap-2 mb-2">
-                          <div className="min-w-0 flex-1">
-                            <h3 className="text-sm font-bold text-primary group-hover:text-emerald-400 transition-colors break-words">
+                      {/* Top: Title, Meta, Status */}
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-3">
+                            <h3 className="text-[15px] font-semibold text-primary truncate leading-tight">
                               {prob.title}
                             </h3>
-                            <div className="flex items-center gap-2 mt-1 flex-wrap">
-                              <span className="flex items-center gap-1 text-[11px] text-secondary min-w-0 truncate">
-                                <Tag className="w-3 h-3 text-sky-400 shrink-0" />
-                                <span className="truncate">{prob.topic}</span>
-                              </span>
-                              {renderDifficultyBadge(prob.difficulty)}
-                            </div>
+                            {renderDifficultyBadge(prob.difficulty)}
                           </div>
-
-                          {/* Status Dropdown Trigger */}
-                          <div className="relative shrink-0">
-                            <select
-                              value={prob.status}
-                              onChange={(e) =>
-                                onUpdateProblem(prob.uuid, { status: e.target.value as PracticeStatus })
-                              }
-                              className="bg-canvas border border-default text-secondary hover:border-active rounded px-2 py-1 text-xs focus:outline-none cursor-pointer"
-                            >
-                              <option value="Not Started">Not Started</option>
-                              <option value="In Progress">In Progress</option>
-                              <option value="Solved">Solved</option>
-                            </select>
+                          
+                          <div className="flex items-center gap-2 mt-1.5">
+                            <span className="text-[11px] font-medium text-secondary truncate">
+                              {prob.topic}
+                            </span>
                           </div>
                         </div>
 
-                        {/* Description Excerpt */}
-                        {prob.description && (
-                          <p className="text-xs text-secondary line-clamp-2 mb-3 bg-canvas/60 p-2 rounded border border-default/50 font-sans break-words">
-                            {prob.description}
-                          </p>
-                        )}
+                        <div className="shrink-0 flex items-center">
+                          {/* Status Selector */}
+                          <select
+                            value={prob.status}
+                            onChange={(e) =>
+                              onUpdateProblem(prob.uuid, { status: e.target.value as PracticeStatus })
+                            }
+                            className={`bg-transparent hover:bg-surface-elevated border border-transparent hover:border-subtle rounded px-2 py-0.5 text-[11px] font-medium focus:outline-none cursor-pointer transition-colors ${
+                              prob.status === 'Solved' ? 'text-emerald-500 dark:text-emerald-400' :
+                              prob.status === 'In Progress' ? 'text-sky-500 dark:text-sky-400' :
+                              'text-muted'
+                            }`}
+                          >
+                            <option value="Not Started" className="text-primary bg-surface">Not Started</option>
+                            <option value="In Progress" className="text-primary bg-surface">In Progress</option>
+                            <option value="Solved" className="text-primary bg-surface">Solved</option>
+                          </select>
+                        </div>
                       </div>
 
-                      {/* Footer Row: Linked Program Info & Action Buttons */}
-                      <div className="pt-3 border-t border-default/70 flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
-                        {/* Linked Program Tag */}
-                        <div className="text-[11px] text-secondary truncate min-w-0 flex-1">
+                      {/* Description */}
+                      {prob.description && (
+                        <p className="text-[13px] leading-relaxed text-secondary line-clamp-2 max-w-3xl">
+                          {prob.description}
+                        </p>
+                      )}
+
+                      {/* Bottom: Linked Program & Actions */}
+                      <div className="flex items-center justify-between mt-1 gap-4 flex-wrap sm:flex-nowrap">
+                        
+                        {/* Linked Program tag */}
+                        <div className="text-[11px] min-w-0">
                           {linkedProgram ? (
-                            <span className="flex items-center gap-1 font-mono text-emerald-400 min-w-0">
-                              <FileCode className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                              <span className="truncate">{linkedProgram.name}</span>
+                            <span className="flex items-center gap-1.5 font-mono text-primary min-w-0">
+                              <span className="text-muted">▣</span>
+                              <span className="truncate hover:underline cursor-default">{linkedProgram.name}</span>
                             </span>
                           ) : (
-                            <span className="text-muted italic">No program linked</span>
+                            <span className="text-muted italic flex items-center gap-1">No program linked</span>
                           )}
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center gap-1.5 shrink-0 flex-wrap sm:flex-nowrap">
-                          {/* Attempts Button */}
+                        <div className="flex items-center gap-3 shrink-0">
                           <button
                             onClick={() => setHistoryProblem(prob)}
-                            className="flex items-center gap-1 px-2 py-1 bg-canvas hover:bg-surface-elevated text-secondary border border-default rounded text-xs font-mono transition-colors"
-                            title="View Attempt History"
-                            aria-label="View Attempt History"
+                            className="text-[11px] font-medium text-secondary hover:text-primary transition-colors"
                           >
-                            <Layers className="w-3.5 h-3.5 text-sky-400" />
-                            <span>Attempts ({attempts.filter((a) => a.practiceProblemUuid === prob.uuid).length})</span>
+                            Attempts ({attempts.filter((a) => a.practiceProblemUuid === prob.uuid).length})
                           </button>
 
-                          {/* Edit Button */}
-                          <button
-                            onClick={() => {
-                              setProblemToEdit(prob);
-                              setIsModalOpen(true);
-                            }}
-                            className="p-1.5 text-secondary hover:text-primary hover:bg-surface-elevated rounded transition-colors"
-                            title="Edit practice problem"
-                            aria-label="Edit problem"
-                          >
-                            <Edit2 className="w-3.5 h-3.5" />
-                          </button>
-
-                          {/* Delete Button */}
-                          <button
-                            onClick={() => setProblemToDelete(prob)}
-                            className="p-1.5 text-secondary hover:text-red-400 hover:bg-red-950/30 rounded transition-colors"
-                            title="Delete practice problem"
-                            aria-label="Delete problem"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-
-                          {/* Primary Open/Start Practice Action */}
+                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                              onClick={() => {
+                                setProblemToEdit(prob);
+                                setIsModalOpen(true);
+                              }}
+                              className="p-1 text-muted hover:text-primary transition-colors"
+                              title="Edit problem"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => setProblemToDelete(prob)}
+                              className="p-1 text-muted hover:text-red-400 transition-colors"
+                              title="Delete problem"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                          
+                          {/* Primary Action */}
                           {linkedProgram ? (
                             <button
                               onClick={() => onOpenPracticeProgram(prob, linkedProgram.uuid)}
-                              className="flex items-center gap-1 px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                              className="text-[12px] font-medium text-blue-500 hover:text-blue-400 transition-colors flex items-center gap-1"
                             >
                               <span>Open Practice</span>
-                              <ExternalLink className="w-3 h-3" />
+                              <ExternalLink className="w-3.5 h-3.5" />
                             </button>
                           ) : (
                             <button
@@ -406,10 +403,10 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                                 setProblemToLink(prob);
                                 setSelectedProgramToLink(programs.length > 0 ? programs[0].uuid : '');
                               }}
-                              className="flex items-center gap-1 px-3 py-1 bg-surface-elevated hover:bg-surface-hover text-primary border border-default rounded text-xs font-medium cursor-pointer transition-colors"
+                              className="text-[12px] font-medium text-emerald-500 hover:text-emerald-400 transition-colors flex items-center gap-1"
                             >
                               <span>Start Practice</span>
-                              <Plus className="w-3 h-3 text-emerald-400" />
+                              <Plus className="w-3 h-3" />
                             </button>
                           )}
                         </div>
@@ -420,8 +417,8 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
               </div>
             ) : (
               /* Empty State */
-              <div className="bg-surface border border-default rounded-xl p-12 text-center space-y-4">
-                <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mx-auto">
+              <div className="py-24 text-center space-y-4">
+                <div className="w-12 h-12 rounded-full bg-surface-elevated flex items-center justify-center text-muted mx-auto">
                   <BookOpen className="w-6 h-6" />
                 </div>
                 {problems.length === 0 ? (
@@ -489,7 +486,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
           }}
         >
           <div
-            className="bg-surface border border-default rounded-xl p-5 max-w-md w-full space-y-4 shadow-2xl"
+            className="bg-surface border border-subtle rounded-xl p-5 max-w-md w-full space-y-4 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3">
@@ -502,7 +499,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
               </div>
             </div>
 
-            <p className="text-xs text-secondary bg-canvas p-2.5 rounded border border-default">
+            <p className="text-xs text-secondary bg-surface-elevated p-2.5 rounded border border-subtle/50">
               Note: Deleting this practice problem will NOT delete any linked CodeSpace program.
             </p>
 
@@ -533,10 +530,10 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
           }}
         >
           <div
-            className="bg-surface border border-default rounded-xl p-5 max-w-md w-full space-y-4 shadow-2xl"
+            className="bg-surface border border-subtle rounded-xl p-5 max-w-md w-full space-y-4 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-2 border-b border-default">
+            <div className="flex items-center justify-between pb-2 border-b border-subtle">
               <h3 className="text-sm font-semibold text-primary">Start Practice: {problemToLink.title}</h3>
               <button
                 onClick={() => setProblemToLink(null)}
@@ -556,7 +553,7 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
                 <select
                   value={selectedProgramToLink}
                   onChange={(e) => setSelectedProgramToLink(e.target.value)}
-                  className="w-full bg-canvas border border-default rounded px-3 py-2 text-xs font-mono text-primary"
+                  className="w-full bg-canvas border border-subtle rounded px-3 py-2 text-xs font-mono text-primary"
                 >
                   {programs.map((p) => (
                     <option key={p.uuid} value={p.uuid}>
@@ -575,9 +572,9 @@ export const PracticeWorkspace: React.FC<PracticeWorkspaceProps> = ({
             )}
 
             <div className="relative flex py-1 items-center">
-              <div className="flex-grow border-t border-default"></div>
+              <div className="flex-grow border-t border-subtle"></div>
               <span className="flex-shrink mx-2 text-[10px] text-muted uppercase font-mono">Or</span>
-              <div className="flex-grow border-t border-default"></div>
+              <div className="flex-grow border-t border-subtle"></div>
             </div>
 
             <button
